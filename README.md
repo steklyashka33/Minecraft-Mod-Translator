@@ -1,5 +1,5 @@
 # mod-translator-for-minecraft
 translates minecraft mods into other languages
 
-##License
+## License
 [MIT License](LICENSE)
