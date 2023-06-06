@@ -1,0 +1,12 @@
+title: Mod Translator
+
+system_list_of_appearance_modes:
+- System
+- Light
+- Dark
+
+user_config_template:
+  interface_language: English #language name
+  dict_interface_language: null #example:  English: en.yaml
+  appearance_mode: 0  #number from the list system_list_of_appearance_modes
+  last_path_entry: ''

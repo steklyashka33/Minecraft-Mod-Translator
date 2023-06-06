@@ -1,0 +1,13 @@
+language_name: Rusian
+
+label_interface_language: "Язык интерфейса:"
+label_appearance_mode: "Режим внешнего вида:"
+list_of_appearance_modes:
+- Системная
+- Светлая
+- Тёмная
+
+label_data_entry: Ввод данных
+label_translation_language: "Язык перевода:"
+label_enter_path: "Введите путь к папке с модами:"
+label_next: Продолжить

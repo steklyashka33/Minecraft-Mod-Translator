@@ -1,0 +1,13 @@
+language_name: English
+
+label_interface_language: "Interface Language:"
+label_appearance_mode: "Appearance Mode:"
+list_of_appearance_modes:
+- System
+- Light
+- Dark
+
+label_data_entry: Data entry
+label_translation_language: "Translation language:"
+label_enter_path: "Enter the path to the mods folder:"
+label_next: Next
