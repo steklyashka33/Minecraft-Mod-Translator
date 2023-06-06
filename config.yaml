@@ -5,6 +5,9 @@ system_list_of_appearance_modes:
 - Light
 - Dark
 
+folder_with_translations: "/lang"
+folder_with_images: "/images"
+
 user_config_template:
   interface_language: English #language name
   dict_interface_language: null #example:  English: en.yaml

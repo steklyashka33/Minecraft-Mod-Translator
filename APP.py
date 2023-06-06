@@ -1,8 +1,9 @@
-import tkinter as tk
 from customtkinter import *
-from CTkScrollableDropdown import CTkScrollableDropdown
+from utils.CTkScrollableDropdown import CTkScrollableDropdown
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
+import os
+
 
 #pip install pillow
 #pip install pyyaml
@@ -17,10 +18,12 @@ class App(CTk):
     def __init__(self):
         super().__init__()
 
+        self.main_folder = os.path.dirname(os.path.abspath(__file__))
+
         # создание главного окна
         self.title(title)
-        window_width = 480
-        window_height = 360
+        window_width = 600
+        window_height = 450
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
@@ -53,11 +56,13 @@ class App(CTk):
         self.sidebar_frame.grid_rowconfigure(1, weight=1)
 
         # 
-        self.logo_label = CTkLabel(self.sidebar_frame, text=title, font=CTkFont(size=17, weight="bold"))
+        self.logo_label = CTkLabel(self.sidebar_frame, text=title, font=CTkFont(size=21, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=10, pady=(20, 10))
 
+        font_label=CTkFont(size=15)
+
         # 
-        self.interface_language_label = CTkLabel(self.sidebar_frame, text="Interface Language:", anchor="w")
+        self.interface_language_label = CTkLabel(self.sidebar_frame, text="Interface Language:", anchor="w", font=font_label)
         self.interface_language_label.grid(row=2, column=0, padx=10, pady=(10, 0))
         self.interface_language_menu = CTkOptionMenu(self.sidebar_frame, width=80, command=self.reset_values)
         self.interface_language_menu.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
@@ -65,7 +70,7 @@ class App(CTk):
         def change_appearance_mode_event(new_appearance_mode: str):
             set_appearance_mode(new_appearance_mode)
         # 
-        self.appearance_mode_label = CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
+        self.appearance_mode_label = CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=font_label)
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
         self.appearance_mode_optionemenu = CTkOptionMenu(self.sidebar_frame, width=80, command=change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10), sticky="ew")
@@ -81,32 +86,37 @@ class App(CTk):
         self.main_frame.grid_rowconfigure((0, 5), weight=10, uniform="fred")
 
         # 
-        label_font = CTkFont("Arial", size=28, weight="bold")
-        self.main_label = CTkLabel(self.main_frame, font=label_font) #text="Ввод данных"
+        header_font = CTkFont("Arial", size=38, weight="bold")
+        self.main_label = CTkLabel(self.main_frame, font=header_font) #text="Ввод данных"
         self.main_label.grid(row=0, column=0, columnspan=3, pady=10)
 
+        label_font = CTkFont("Arial", size=18)
+        widget_font = CTkFont("Arial", size=16)
+        widget_width = 192
+        widget_height = 36
+
         # создание подписи к вводу пути к папке
-        entry_label = CTkLabel(self.main_frame, text="Введите путь к папке с модами:")
+        entry_label = CTkLabel(self.main_frame, text="Введите путь к папке с модами:", font=label_font)
         entry_label.grid(row=1, column=0, sticky="s")
         
         # создание CTkComboBox для ввода пути к папке
         self.directory_path = StringVar()
-        self.folder_entry = CTkComboBox(self.main_frame, variable=self.directory_path)
+        self.folder_entry = CTkComboBox(self.main_frame,  width=widget_width, height=widget_height, font=widget_font, variable=self.directory_path)
         self.folder_entry.grid(row=2, column=0)
 
         # создание подписи для выбора языков
-        language_label = CTkLabel(self.main_frame, text="Язык перевода:")
+        language_label = CTkLabel(self.main_frame, text="Язык перевода:", font=label_font)
         language_label.grid(row=3, column=0, sticky="s")
         
         # создание виджета CTkOptionMenu для выбора языков
         self.target_language = StringVar()
-        self.language_optionmenu = CTkOptionMenu(self.main_frame, variable=self.target_language)
+        self.language_optionmenu = CTkOptionMenu(self.main_frame, width=widget_width, height=widget_height, font=widget_font, variable=self.target_language)
         self.language_optionmenu.grid(row=4, column=0)
         self.language_optionmenu.set("Выберите язык")
         CTkScrollableDropdown(self.language_optionmenu, height = 200, values=["Русский", "English"], frame_corner_radius=20)
         
         # создание кнопки для продолжения
-        next_button = CTkButton(self.main_frame, text="Продолжить", command=self.next_step)
+        next_button = CTkButton(self.main_frame, width=widget_width, height=widget_height, font=widget_font, text="Продолжить", command=self.next_step)
         next_button.grid(row=5, column=0)
 
         """
