@@ -1,6 +1,7 @@
 from YAMLFileManager import YAMLFileManager
+from UserConfigManager import UserConfigManager
 
-class DataFileManager():
+class DataFileManager(UserConfigManager):
     def __init__(self, main_folder):
         self.main_folder = main_folder
     
