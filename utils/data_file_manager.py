@@ -1,5 +1,5 @@
-from YAMLFileManager import YAMLFileManager
-from UserConfigManager import UserConfigManager
+from yaml_file_manager import YAMLFileManager
+from user_config_manager import UserConfigManager
 
 class DataFileManager(UserConfigManager):
     def __init__(self, main_folder):
@@ -10,4 +10,3 @@ class DataFileManager(UserConfigManager):
 
 if __name__ == "__main__":
     maneger = YAMLFileManager("/lang", "ru")
-    print(maneger.load_file())

