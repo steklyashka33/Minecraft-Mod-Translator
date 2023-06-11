@@ -14,6 +14,13 @@ class UserConfigManager():
         }
 
     FILE_NAME = "user_config.yaml"
+
+    def __init__(self, main_folder: str) -> None:
+        """initialization."""
+
+        #checking for correct input
+        self._checking_the_path(main_folder)
+        self.main_folder = main_folder
     
     @staticmethod
     def _checking_the_path(folder) -> None:
@@ -24,16 +31,6 @@ class UserConfigManager():
                 raise NotADirectoryError(f"Directory '{folder}' does not exist.")
         else:
             raise TypeError("Directory must be a string.")
-
-    def __new__(cls, main_folder: str):
-        """checking for correct input."""
-
-        cls._checking_the_path(main_folder)
-        obj = super().__new__(cls)
-        return obj
-
-    def __init__(self, main_folder: str) -> None:
-        self.main_folder = main_folder
     
     def get_user_config(self, folder_with_translations: str):
         """returns data from the user_config file."""
