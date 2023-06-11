@@ -8,6 +8,7 @@ list_of_appearance_modes:
 - Тёмная
 
 label_data_entry: Ввод данных
-label_translation_language: "Язык перевода:"
 label_enter_path: "Введите путь к папке с модами:"
+label_translation_language: "Язык перевода:"
+label_Select_language: Выберите язык
 label_next: Продолжить

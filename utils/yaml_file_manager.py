@@ -54,7 +54,7 @@ class YAMLFileManager:
         """Writes the passed values to a file."""
 
         with open(self._file_name, 'w', encoding="utf-8") as f:
-            yaml.dump(to_yaml, f)
+            yaml.dump(to_yaml, f, encoding="utf-8")
     
     def get_yaml_files(self) -> list[str]:
         """Get the names of all YAML files in the directory."""

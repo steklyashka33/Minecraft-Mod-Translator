@@ -8,6 +8,7 @@ list_of_appearance_modes:
 - Dark
 
 label_data_entry: Data entry
-label_translation_language: "Translation language:"
 label_enter_path: "Enter the path to the mods folder:"
+label_translation_language: "Translation language:"
+label_Select_language: Select a language
 label_next: Next
