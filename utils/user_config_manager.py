@@ -78,7 +78,8 @@ class UserConfigManager():
 
 
 if __name__ == "__main__":
-    manager = UserConfigManager(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    data = manager.get_user_config("lang")
-    #manager.save_user_config(data)
+    main_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    manager = UserConfigManager(main_folder)
+    lang_folder = YAMLFileManager(main_folder, "config.yaml").load_file()["folder_with_translations"]
+    data = manager.get_user_config(lang_folder)
     print(data)
