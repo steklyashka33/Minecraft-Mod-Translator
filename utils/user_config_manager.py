@@ -44,12 +44,10 @@ class UserConfigManager():
         file_manager = YAMLFileManager(self.main_folder, self.FILE_NAME)
         if isfile( join(self.main_folder, self.FILE_NAME) ):
             self.user_config = file_manager.load_file()
-
-            if None in self.user_config['dict_interface_language'].keys():
-                self.user_config['dict_interface_language'] = self._get_dictionary_of_interface_language(folder_with_translations)
         else:
             self.user_config = self.USER_CONFIG_TEMPLATE
-            self.user_config['dict_interface_language'] = self._get_dictionary_of_interface_language(folder_with_translations)
+        
+        self.user_config['dict_interface_language'] = self._get_dictionary_of_interface_language(folder_with_translations)
         
         return self.user_config
     
@@ -84,4 +82,7 @@ class UserConfigManager():
 
 
 if __name__ == "__main__":
-    print(UserConfigManager(r'C:\Users\PC\Documents\GitHub\mod-translator-for-minecraft').get_user_config("lang"))
+    manager = UserConfigManager(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data = manager.get_user_config("lang")
+    #manager.save_user_config(data)
+    print(data)
