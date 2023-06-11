@@ -1,4 +1,4 @@
-from yaml_file_manager import YAMLFileManager
+from .yaml_file_manager import YAMLFileManager
 from os.path import isfile, join
 import os
 
@@ -16,7 +16,6 @@ class UserConfigManager():
     FILE_NAME = "user_config.yaml"
 
     def __init__(self, main_folder: str) -> None:
-        """initialization."""
 
         #checking for correct input
         self._checking_the_path(main_folder)
@@ -80,6 +79,6 @@ class UserConfigManager():
 if __name__ == "__main__":
     main_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     manager = UserConfigManager(main_folder)
-    lang_folder = YAMLFileManager(main_folder, "config.yaml").load_file()["folder_with_translations"]
-    data = manager.get_user_config(lang_folder)
+    folder_with_translations = YAMLFileManager(main_folder, "config.yaml").load_file()["folder_with_translations"]
+    data = manager.get_user_config(folder_with_translations)
     print(data)
