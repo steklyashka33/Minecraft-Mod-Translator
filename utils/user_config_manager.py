@@ -72,11 +72,10 @@ class UserConfigManager():
             
             try:
                 language_name = file_data['language_name']
+                dict_interface_language[language_name] = file_name
             except:
-                language_name = None
+                pass
             
-            dict_interface_language[language_name] = file_name
-        
         return dict_interface_language
 
 
