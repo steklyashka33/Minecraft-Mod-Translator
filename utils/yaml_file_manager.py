@@ -8,7 +8,7 @@ class YAMLFileManager:
         self.set_directory(directory)
         self.set_file_name(file_name)
     
-    def set_file_name(self, file_name):
+    def set_file_name(self, file_name) -> None:
         """Set the file name."""
 
         if file_name is None:
@@ -20,7 +20,7 @@ class YAMLFileManager:
         else:
             raise TypeError("File name must be a string.")
     
-    def set_directory(self, directory):
+    def set_directory(self, directory) -> None:
         """Set the directory."""
 
         if isinstance(directory, str):
@@ -31,10 +31,10 @@ class YAMLFileManager:
         else:
             raise TypeError("Directory must be a string.")
     
-    def get_file_name(self):
+    def get_file_name(self) -> str:
         return self._file_name
     
-    def get_directory(self):
+    def get_directory(self) -> str:
         return self._directory
     
     def load_file(self):
@@ -50,16 +50,19 @@ class YAMLFileManager:
         else:
             raise ValueError("No file name specified.")
     
-    def write_to_file(to_yaml):
+    def write_to_file(self, to_yaml) -> None:
         """Writes the passed values to a file."""
 
-        with open('sw_templates.yaml', 'w', encoding="utf-8") as f:
+        with open(self._file_name, 'w', encoding="utf-8") as f:
             yaml.dump(to_yaml, f)
     
-    def get_yaml_files(self):
+    def get_yaml_files(self) -> list[str]:
         """Get the names of all YAML files in the directory."""
 
-        file_names = [file for file in os.listdir(self._directory) if file.endswith('.yaml')]
+        file_names = []
+        for file in os.listdir(self._directory):
+            if file.endswith('.yaml'):
+                file_names.append(file)
         
         return file_names
 

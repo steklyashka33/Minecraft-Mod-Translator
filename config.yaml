@@ -5,5 +5,5 @@ system_list_of_appearance_modes:
 - Light
 - Dark
 
-folder_with_translations: "/lang"
-folder_with_images: "/images"
+folder_with_translations: "lang"
+folder_with_images: "images"
