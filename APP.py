@@ -74,16 +74,10 @@ class App(CTk):
         self.interface_language_menu.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
         self.interface_language_menu.set(self.lang["language_name"])
 
-        def change_appearance_mode_event(new_appearance_mode: str):
-            system_list_of_appearance_modes = self.config["system_list_of_appearance_modes"]
-            lang_list_of_appearance_modes = self.lang["list_of_appearance_modes"]
-            dict_of_appearance_modes = dict(zip(lang_list_of_appearance_modes, system_list_of_appearance_modes))
-            set_appearance_mode(dict_of_appearance_modes[new_appearance_mode])
-
         # 
         self.appearance_mode_label = CTkLabel(self.sidebar_frame, text=self.lang["label_appearance_mode"], anchor="w", font=font_label)
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
-        self.appearance_mode_optionemenu = CTkOptionMenu(self.sidebar_frame, values=self.lang["list_of_appearance_modes"], command=change_appearance_mode_event)
+        self.appearance_mode_optionemenu = CTkOptionMenu(self.sidebar_frame, values=self.lang["list_of_appearance_modes"], command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10), sticky="ew")
 
 
@@ -155,6 +149,20 @@ class App(CTk):
 
         self.destroy()
         Start()
+
+    def change_appearance_mode_event(self, new_appearance_mode: str):
+        system_list_of_appearance_modes = self.config["system_list_of_appearance_modes"]
+        lang_list_of_appearance_modes = self.lang["list_of_appearance_modes"]
+        dict_of_appearance_modes = dict(zip(lang_list_of_appearance_modes, system_list_of_appearance_modes))
+        system_new_appearance_modes = dict_of_appearance_modes[new_appearance_mode]
+        
+        if system_new_appearance_modes == self.user_config["appearance_mode"]:
+            return None
+        
+        self.user_config["appearance_mode"] = system_new_appearance_modes
+        UserConfigManager(self.main_folder).save_user_config(self.user_config)
+        
+        set_appearance_mode(new_appearance_mode)
         
     def choose_folder(self):
         # функция для вызова диалога выбора папки
