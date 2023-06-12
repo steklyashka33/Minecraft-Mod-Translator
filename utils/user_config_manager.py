@@ -8,7 +8,7 @@ class UserConfigManager():
     USER_CONFIG_TEMPLATE = {
         'interface_language': 'English', 
         'dict_interface_language': None, #example:  English: en.yaml
-        'appearance_mode': 0, #number from the list system_list_of_appearance_modes
+        'appearance_mode': "System", #number from the list system_list_of_appearance_modes
         'last_path_entry': '',
         'startwith': '(Au)',
         }
