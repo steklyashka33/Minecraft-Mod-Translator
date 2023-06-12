@@ -162,7 +162,7 @@ class App(CTk):
         self.user_config["appearance_mode"] = system_new_appearance_modes
         UserConfigManager(self.main_folder).save_user_config(self.user_config)
         
-        set_appearance_mode(new_appearance_mode)
+        set_appearance_mode(system_new_appearance_modes)
         
     def choose_folder(self):
         # функция для вызова диалога выбора папки

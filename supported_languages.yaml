@@ -1,0 +1,105 @@
+Afrikaans:
+  google_code: af
+  mc_code: af_za
+Bulgarian:
+  google_code: bg
+  mc_code: bg_bg
+Catalan:
+  google_code: ca
+  mc_code: ca_es
+Croatian:
+  google_code: hr
+  mc_code: hr_hr
+Czech:
+  google_code: cs
+  mc_code: cs_cz
+Danish:
+  google_code: da
+  mc_code: da_dk
+Dutch:
+  google_code: nl
+  mc_code: nl_nl
+Estonian:
+  google_code: et
+  mc_code: et_ee
+Filipino:
+  google_code: fil
+  mc_code: fil_ph
+Finnish:
+  google_code: fi
+  mc_code: fi_fi
+German:
+  google_code: de
+  mc_code: sxu
+Greek:
+  google_code: el
+  mc_code: el_gr
+Hebrew:
+  google_code: he
+  mc_code: he_il
+Hindi:
+  google_code: hi
+  mc_code: hi_in
+Hungarian:
+  google_code: hu
+  mc_code: hu_hu
+Icelandic:
+  google_code: is
+  mc_code: is_is
+Indonesian:
+  google_code: id / in
+  mc_code: id_id
+Italian:
+  google_code: it
+  mc_code: it_it
+Japanese:
+  google_code: ja
+  mc_code: ja_jp
+Korean:
+  google_code: ko
+  mc_code: ko_kr
+Latvian:
+  google_code: lv
+  mc_code: lv_lv
+Lithuanian:
+  google_code: lt
+  mc_code: lt_lt
+Malay:
+  google_code: ms
+  mc_code: zlm_arab
+Norwegian:
+  google_code: 'no'
+  mc_code: "no_no\u200C[JE only] nb_no\u200C[BE only]"
+Polish:
+  google_code: pl
+  mc_code: pl_pl
+Romanian:
+  google_code: ro
+  mc_code: ro_ro
+Russian:
+  google_code: ru
+  mc_code: ru_ru
+Serbian:
+  google_code: sr
+  mc_code: sr_sp
+Slovak:
+  google_code: sk
+  mc_code: sk_sk
+Slovenian:
+  google_code: sl
+  mc_code: sl_si
+Swedish:
+  google_code: sv
+  mc_code: sv_se
+Thai:
+  google_code: th
+  mc_code: th_th
+Turkish:
+  google_code: tr
+  mc_code: tr_tr
+Ukrainian:
+  google_code: uk
+  mc_code: uk_ua
+Vietnamese:
+  google_code: vi
+  mc_code: vi_vn
