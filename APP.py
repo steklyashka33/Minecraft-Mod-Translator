@@ -13,8 +13,6 @@ import os
 set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue")
 
-title = "Mod Translator"
-
 class App(CTk):
     def __init__(self):
         super().__init__()
@@ -61,7 +59,7 @@ class App(CTk):
         self.sidebar_frame.grid_rowconfigure(1, weight=1)
 
         # 
-        self.logo_label = CTkLabel(self.sidebar_frame, text=title, font=CTkFont(size=21, weight="bold"))
+        self.logo_label = CTkLabel(self.sidebar_frame, text=self.config["title"], font=CTkFont(size=21, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=10, pady=(20, 10))
 
         font_label=CTkFont(size=15)
