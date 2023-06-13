@@ -30,7 +30,7 @@ Finnish:
   mc_code: fi_fi
 German:
   google_code: de
-  mc_code: sxu
+  mc_code: de_de
 Greek:
   google_code: el
   mc_code: el_gr
@@ -66,10 +66,10 @@ Lithuanian:
   mc_code: lt_lt
 Malay:
   google_code: ms
-  mc_code: zlm_arab
+  mc_code: ms_my
 Norwegian:
   google_code: 'no'
-  mc_code: "no_no\u200C[JE only] nb_no\u200C[BE only]"
+  mc_code: nn_no
 Polish:
   google_code: pl
   mc_code: pl_pl
@@ -81,7 +81,7 @@ Russian:
   mc_code: ru_ru
 Serbian:
   google_code: sr
-  mc_code: sr_sp
+  mc_code: sr_cs
 Slovak:
   google_code: sk
   mc_code: sk_sk
