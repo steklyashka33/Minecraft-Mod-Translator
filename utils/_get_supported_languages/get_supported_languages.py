@@ -58,5 +58,5 @@ if __name__ == "__main__":
     saving = [(google_lang, {"google_code": google_code, "mc_code": mc_code}) for google_lang, mc_lang, google_code, mc_code in result]
 
     save = dict(saving)
-    with open("supported_languages.yaml", 'w', encoding="utf-8") as f:
+    with open(main_folder+"\\supported_languages.yaml", 'w', encoding="utf-8") as f:
         yaml.dump(save, f, encoding="utf-8")
