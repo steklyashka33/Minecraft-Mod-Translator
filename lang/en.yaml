@@ -11,4 +11,6 @@ label_data_entry: Data entry
 label_enter_path: "Enter the path to the mods folder:"
 label_translation_language: "Translation language:"
 label_Select_language: Select a language
+label_startwith: "The translation will start with:"
+label_error: Incorrect input or not all fields were filled in
 label_next: Next

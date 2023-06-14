@@ -2,16 +2,8 @@ from customtkinter import *
 from utils import *
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
-from multiprocessing import Process
 import os
 
-
-#pip install pillow
-#pip install pyyaml
-#pip install babel
-
-set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue")
 
 class App(CTk):
     def __init__(self):
@@ -24,11 +16,16 @@ class App(CTk):
         self.user_config = UserConfigManager(self.main_folder).get_user_config(folder_with_translations)
         language_file = self.user_config["dict_interface_language"][ self.user_config["interface_language"] ]
         self.lang = YAMLFileManager(os.path.join( self.main_folder, folder_with_translations ), language_file).load_file()
+        supported_languages_file_name = "supported_languages.yaml"
+        self.supported_languages = YAMLFileManager(self.main_folder, supported_languages_file_name).load_file()
 
         # создание главного окна
         self.title( self.config["title"] )
         window_width = 600
         window_height = 450
+
+        set_appearance_mode(self.user_config["appearance_mode"])  # Modes: "System" (standard), "Dark", "Light"
+        set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue")
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
@@ -73,10 +70,15 @@ class App(CTk):
         self.interface_language_menu.set(self.lang["language_name"])
 
         # 
+        system_list_of_appearance_modes = self.config["system_list_of_appearance_modes"]
+        lang_list_of_appearance_modes = self.lang["list_of_appearance_modes"]
+        self.dict_of_appearance_modes = dict(zip(lang_list_of_appearance_modes, system_list_of_appearance_modes))
+        dict_of_system_appearance_modes = dict(zip(system_list_of_appearance_modes, lang_list_of_appearance_modes))
         self.appearance_mode_label = CTkLabel(self.sidebar_frame, text=self.lang["label_appearance_mode"], anchor="w", font=font_label)
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
         self.appearance_mode_optionemenu = CTkOptionMenu(self.sidebar_frame, values=self.lang["list_of_appearance_modes"], command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10), sticky="ew")
+        self.appearance_mode_optionemenu.set(dict_of_system_appearance_modes[ self.user_config["appearance_mode"] ])
 
 
 
@@ -85,8 +87,9 @@ class App(CTk):
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
         
         self.main_frame.grid_columnconfigure(0, weight=1, uniform="fred")
-        self.main_frame.grid_rowconfigure((1, 2, 3, 4), weight=6, uniform="fred")
-        self.main_frame.grid_rowconfigure((0, 5), weight=10, uniform="fred")
+        self.main_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7), weight=6, uniform="fred")
+        self.main_frame.grid_rowconfigure((0), weight=10, uniform="fred")
+        self.main_frame.grid_rowconfigure((8), weight=8, uniform="fred")
 
         # 
         header_font = CTkFont("Arial", size=38, weight="bold")
@@ -116,11 +119,25 @@ class App(CTk):
         self.language_optionmenu = CTkOptionMenu(self.main_frame, width=widget_width, height=widget_height, font=widget_font, variable=self.target_language)
         self.language_optionmenu.grid(row=4, column=0)
         self.language_optionmenu.set(self.lang["label_Select_language"])
-        CTkScrollableDropdown(self.language_optionmenu, height = 200, values=["Русский", "English"], frame_corner_radius=20)
+        list_supported_languages = self.supported_languages.keys()
+        CTkScrollableDropdown(self.language_optionmenu, height = 200, values=list_supported_languages, frame_corner_radius=20)
+
+        # создание подписи для пристаке
+        startwith_label = CTkLabel(self.main_frame, text=self.lang["label_startwith"], font=("Arial", 14))
+        startwith_label.grid(row=5, column=0, sticky="s")
         
+        # создание виджета CTkEntry для приставки к переводам
+        self.startwith = StringVar(value=self.user_config["startwith"])
+        startwith_font = CTkFont("Arial", size=18, weight="bold")
+        self.startwith_entry = CTkEntry(self.main_frame, width=widget_width, height=widget_height, font=startwith_font, textvariable=self.startwith, justify='center')
+        self.startwith_entry.grid(row=6, column=0)
+        
+        # создание надписи о невозможности продолжить
+        self.error_label = CTkLabel(self.main_frame, text_color="red", text=self.lang["label_error"], font=("Arial", 14))
+
         # создание кнопки для продолжения
         next_button = CTkButton(self.main_frame, width=widget_width, height=widget_height, font=widget_font, text=self.lang["label_next"], command=self.next_step)
-        next_button.grid(row=5, column=0)
+        next_button.grid(row=8, column=0, sticky="n")
 
         """
             if self.settings_are_open:
@@ -149,10 +166,7 @@ class App(CTk):
         Start()
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
-        system_list_of_appearance_modes = self.config["system_list_of_appearance_modes"]
-        lang_list_of_appearance_modes = self.lang["list_of_appearance_modes"]
-        dict_of_appearance_modes = dict(zip(lang_list_of_appearance_modes, system_list_of_appearance_modes))
-        system_new_appearance_modes = dict_of_appearance_modes[new_appearance_mode]
+        system_new_appearance_modes = self.dict_of_appearance_modes[new_appearance_mode]
         
         if system_new_appearance_modes == self.user_config["appearance_mode"]:
             return None
@@ -169,13 +183,35 @@ class App(CTk):
         
     def next_step(self):
         # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
-        print(self.directory_path.get())
-        for widget in self.winfo_children():
+
+        def checking_the_path(folder):
+            try:
+                UserConfigManager._checking_the_path(folder)
+                return True
+            except:
+                return False
+
+        #
+        if self.target_language.get() == self.lang["label_Select_language"] or not checking_the_path(self.directory_path.get()):
+            self.error_label.grid(row=7, column=0, sticky="s")
+            return None
+        
+        self.session = {
+            "path": self.directory_path.get(),
+            "to_language": self.supported_languages[ self.target_language.get() ],
+            "startwith": self.startwith,
+        }
+
+        print(self.session)
+
+        """for widget in self.winfo_children():
             widget.destroy()
             
+        self.build_main()"""
+
+        from time import sleep
+        sleep(5)
         self.destroy()
-        app = App()
-        app.run()
         
     def run(self):
         # функция для запуска приложения

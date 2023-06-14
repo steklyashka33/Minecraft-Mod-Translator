@@ -11,4 +11,6 @@ label_data_entry: Ввод данных
 label_enter_path: "Введите путь к папке с модами:"
 label_translation_language: "Язык перевода:"
 label_Select_language: Выберите язык
+label_startwith: "Перевод будет начинаться с:"
+label_error: Неверный ввод или не все поля были заполнены
 label_next: Продолжить
