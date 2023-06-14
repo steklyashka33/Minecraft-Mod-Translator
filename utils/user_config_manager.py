@@ -9,7 +9,7 @@ class UserConfigManager():
         'interface_language': 'English', 
         'dict_interface_language': None, #example:  English: en.yaml
         'appearance_mode': "System", #number from the list system_list_of_appearance_modes
-        'last_path_entry': '',
+        'last_path_entry': 'C:\Users\PC\AppData\Roaming\.minecraft\mods',
         'startwith': '(Auto)',
         }
 
