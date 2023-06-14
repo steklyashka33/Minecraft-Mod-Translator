@@ -10,7 +10,7 @@ class UserConfigManager():
         'dict_interface_language': None, #example:  English: en.yaml
         'appearance_mode': "System", #number from the list system_list_of_appearance_modes
         'last_path_entry': '',
-        'startwith': '(Au)',
+        'startwith': '(Auto)',
         }
 
     FILE_NAME = "user_config.yaml"
