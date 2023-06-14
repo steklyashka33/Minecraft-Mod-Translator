@@ -1,6 +1,7 @@
 from typing import Optional, Tuple, Union, Callable
 from customtkinter import *
 from utils import *
+from .folder_dialog_combobox import FolderDialogComboBox
 
 
 class Page1(CTkFrame):
@@ -39,9 +40,9 @@ class Page1(CTkFrame):
         self.main_label.grid(row=0, column=0, columnspan=3, pady=10)
 
         label_font = CTkFont("Arial", size=18)
-        widget_font = CTkFont("Arial", size=16)
-        widget_width = 192
-        widget_height = 36
+        widget_font = CTkFont("Arial", size=18)
+        widget_width = 210
+        widget_height = 42
 
         # создание подписи к вводу пути к папке
         entry_label = CTkLabel(self, text=self.lang["label_enter_path"], font=label_font)
@@ -49,8 +50,9 @@ class Page1(CTkFrame):
         
         # создание CTkComboBox для ввода пути к папке
         self.directory_path = StringVar()
-        self.folder_entry = CTkComboBox(self,  width=widget_width, height=widget_height, font=widget_font, variable=self.directory_path)
+        self.folder_entry = FolderDialogComboBox(self, width=widget_width, height=widget_height, font=CTkFont("Arial", size=14), variable=self.directory_path)
         self.folder_entry.grid(row=2, column=0)
+        self.folder_entry.set(self.user_config["last_path_entry"])
 
         # создание подписи для выбора языков
         language_label = CTkLabel(self, text=self.lang["label_translation_language"], font=label_font)
@@ -58,7 +60,8 @@ class Page1(CTkFrame):
         
         # создание виджета CTkOptionMenu для выбора языков
         self.target_language = StringVar()
-        self.language_optionmenu = CTkOptionMenu(self, width=widget_width, height=widget_height, font=widget_font, variable=self.target_language)
+        language_font = CTkFont("Arial", size=20)
+        self.language_optionmenu = CTkOptionMenu(self, width=widget_width, height=widget_height, font=language_font, variable=self.target_language)
         self.language_optionmenu.grid(row=4, column=0)
         self.language_optionmenu.set(self.lang["label_Select_language"])
         list_supported_languages = self.supported_languages.keys()
@@ -76,7 +79,7 @@ class Page1(CTkFrame):
         # создание виджета CTkEntry для приставки к переводам
         self.startwith = StringVar(value=self.user_config["startwith"])
         self.startwith.trace_add("write", lambda *args: character_limit(self.startwith))
-        startwith_font = CTkFont("Arial", size=18, weight="bold")
+        startwith_font = CTkFont("Arial", size=22, weight="bold")
         self.startwith_entry = CTkEntry(self, width=widget_width, height=widget_height, font=startwith_font, textvariable=self.startwith, justify='center')
         self.startwith_entry.grid(row=6, column=0)
         
@@ -84,13 +87,9 @@ class Page1(CTkFrame):
         self.error_label = CTkLabel(self, text_color="red", text=self.lang["label_error"], font=("Arial", 14))
 
         # создание кнопки для продолжения
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=widget_font, text=self.lang["label_next"], command=self.next_step)
+        button_font = CTkFont("Arial", size=22, weight="bold")
+        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang["label_next"], command=self.next_step)
         next_button.grid(row=8, column=0, sticky="n")
-        
-    def choose_folder(self):
-        # функция для вызова диалога выбора папки
-        folder_path = filedialog.askdirectory()
-        self.directory_path.set(folder_path)
         
     def next_step(self):
         # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
@@ -98,7 +97,7 @@ class Page1(CTkFrame):
         #
         if self.target_language.get() == self.lang["label_Select_language"] or not self.checking_the_path(self.directory_path.get()):
             self.error_label.grid(row=7, column=0, sticky="s")
-            return None
+            return
         
         self.session = self.get_session_data()
 
