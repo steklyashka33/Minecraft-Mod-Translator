@@ -11,13 +11,7 @@ class App(CTk):
 
         self.main_folder = os.path.dirname(os.path.abspath(__file__))
         
-        self.config = YAMLFileManager(self.main_folder, "config.yaml").load_file()
-        folder_with_translations = self.config["folder_with_translations"]
-        self.user_config = UserConfigManager(self.main_folder).get_user_config(folder_with_translations)
-        language_file = self.user_config["dict_interface_language"][ self.user_config["interface_language"] ]
-        self.lang = YAMLFileManager(os.path.join( self.main_folder, folder_with_translations ), language_file).load_file()
-        supported_languages_file_name = "supported_languages.yaml"
-        self.supported_languages = YAMLFileManager(self.main_folder, supported_languages_file_name).load_file()
+        self.config, self.user_config, self.lang, self.supported_languages = GetData.get(self.main_folder)
 
         # создание главного окна
         self.title( self.config["title"] )
@@ -39,7 +33,6 @@ class App(CTk):
         self.grid_columnconfigure(0, weight=3, uniform="fred")
         self.grid_columnconfigure(1, weight=7, uniform="fred")
         self.grid_rowconfigure(0, weight=1, uniform="fred")
-        #self.grid_rowconfigure(1, weight=5, uniform="fred")
 
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
         self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))
@@ -125,9 +118,15 @@ class App(CTk):
         # создание подписи для пристаке
         startwith_label = CTkLabel(self.main_frame, text=self.lang["label_startwith"], font=("Arial", 14))
         startwith_label.grid(row=5, column=0, sticky="s")
+
+        # функция для ограничения длины строки
+        def character_limit(entry_text):
+            if len(entry_text.get()) > 0:
+                entry_text.set(entry_text.get()[:6])
         
         # создание виджета CTkEntry для приставки к переводам
         self.startwith = StringVar(value=self.user_config["startwith"])
+        self.startwith.trace_add("write", lambda *args: character_limit(self.startwith))
         startwith_font = CTkFont("Arial", size=18, weight="bold")
         self.startwith_entry = CTkEntry(self.main_frame, width=widget_width, height=widget_height, font=startwith_font, textvariable=self.startwith, justify='center')
         self.startwith_entry.grid(row=6, column=0)
