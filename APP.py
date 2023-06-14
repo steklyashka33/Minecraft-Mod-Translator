@@ -1,5 +1,6 @@
 from customtkinter import *
 from utils import *
+from pages import *
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
 import os
@@ -10,8 +11,9 @@ class App(CTk):
         super().__init__()
 
         self.main_folder = os.path.dirname(os.path.abspath(__file__))
+        self.data = GetData(self.main_folder)
         
-        self.config, self.user_config, self.lang, self.supported_languages = GetData.get(self.main_folder)
+        self.config, self.user_config, self.lang, self.supported_languages = self.data.get()
 
         # создание главного окна
         self.title( self.config["title"] )
@@ -34,8 +36,8 @@ class App(CTk):
         self.grid_columnconfigure(1, weight=7, uniform="fred")
         self.grid_rowconfigure(0, weight=1, uniform="fred")
 
-        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
-        self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))
+        '''image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
+        self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))'''
 
         self.build_sidebar()
         self.build_main()
@@ -43,6 +45,8 @@ class App(CTk):
 
 
     def build_sidebar(self):
+        self.config, self.user_config, self.lang, self.supported_languages = self.data.get()
+        
         #
         self.sidebar_frame = CTkFrame(self, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
@@ -76,77 +80,10 @@ class App(CTk):
 
 
     def build_main(self):
-        self.main_frame = CTkFrame(self)
+        self.main_frame = Page1(self, GetData(self.main_folder))
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
-        
-        self.main_frame.grid_columnconfigure(0, weight=1, uniform="fred")
-        self.main_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7), weight=6, uniform="fred")
-        self.main_frame.grid_rowconfigure((0), weight=10, uniform="fred")
-        self.main_frame.grid_rowconfigure((8), weight=8, uniform="fred")
-
-        # 
-        header_font = CTkFont("Arial", size=38, weight="bold")
-        self.main_label = CTkLabel(self.main_frame, text=self.lang["label_data_entry"], font=header_font)
-        self.main_label.grid(row=0, column=0, columnspan=3, pady=10)
-
-        label_font = CTkFont("Arial", size=18)
-        widget_font = CTkFont("Arial", size=16)
-        widget_width = 192
-        widget_height = 36
-
-        # создание подписи к вводу пути к папке
-        entry_label = CTkLabel(self.main_frame, text=self.lang["label_enter_path"], font=label_font)
-        entry_label.grid(row=1, column=0, sticky="s")
-        
-        # создание CTkComboBox для ввода пути к папке
-        self.directory_path = StringVar()
-        self.folder_entry = CTkComboBox(self.main_frame,  width=widget_width, height=widget_height, font=widget_font, variable=self.directory_path)
-        self.folder_entry.grid(row=2, column=0)
-
-        # создание подписи для выбора языков
-        language_label = CTkLabel(self.main_frame, text=self.lang["label_translation_language"], font=label_font)
-        language_label.grid(row=3, column=0, sticky="s")
-        
-        # создание виджета CTkOptionMenu для выбора языков
-        self.target_language = StringVar()
-        self.language_optionmenu = CTkOptionMenu(self.main_frame, width=widget_width, height=widget_height, font=widget_font, variable=self.target_language)
-        self.language_optionmenu.grid(row=4, column=0)
-        self.language_optionmenu.set(self.lang["label_Select_language"])
-        list_supported_languages = self.supported_languages.keys()
-        CTkScrollableDropdown(self.language_optionmenu, height = 200, values=list_supported_languages, frame_corner_radius=20)
-
-        # создание подписи для пристаке
-        startwith_label = CTkLabel(self.main_frame, text=self.lang["label_startwith"], font=("Arial", 14))
-        startwith_label.grid(row=5, column=0, sticky="s")
-
-        # функция для ограничения длины строки
-        def character_limit(entry_text):
-            if len(entry_text.get()) > 0:
-                entry_text.set(entry_text.get()[:6])
-        
-        # создание виджета CTkEntry для приставки к переводам
-        self.startwith = StringVar(value=self.user_config["startwith"])
-        self.startwith.trace_add("write", lambda *args: character_limit(self.startwith))
-        startwith_font = CTkFont("Arial", size=18, weight="bold")
-        self.startwith_entry = CTkEntry(self.main_frame, width=widget_width, height=widget_height, font=startwith_font, textvariable=self.startwith, justify='center')
-        self.startwith_entry.grid(row=6, column=0)
-        
-        # создание надписи о невозможности продолжить
-        self.error_label = CTkLabel(self.main_frame, text_color="red", text=self.lang["label_error"], font=("Arial", 14))
-
-        # создание кнопки для продолжения
-        next_button = CTkButton(self.main_frame, width=widget_width, height=widget_height, font=widget_font, text=self.lang["label_next"], command=self.next_step)
-        next_button.grid(row=8, column=0, sticky="n")
 
         """
-            if self.settings_are_open:
-                self.settings_frame.grid(row=0, rowspan=2, column=1, pady=20, sticky="nsew")
-                self.main_frame.grid_forget()
-            else:
-                self.main_frame.grid(row=0, rowspan=2, column=1, pady=20, sticky="nsew")
-                self.settings_frame.grid_forget()
-
-        # создание image проводника
         settings_image = CTkImage(light_image=Image.open("light_settings.png"),
                              dark_image=Image.open("dark_settings.png"),
                              size=(25, 25))
@@ -161,8 +98,14 @@ class App(CTk):
         self.user_config["interface_language"] = language
         UserConfigManager(self.main_folder).save_user_config(self.user_config)
 
-        self.destroy()
-        Start()
+        session = self.main_frame.get_session_data()
+
+        self.sidebar_frame.destroy()
+        self.main_frame.destroy()
+        self.build_sidebar()
+        self.build_main()
+
+        self.main_frame.set_session_data(session)
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         system_new_appearance_modes = self.dict_of_appearance_modes[new_appearance_mode]
@@ -174,43 +117,6 @@ class App(CTk):
         UserConfigManager(self.main_folder).save_user_config(self.user_config)
         
         set_appearance_mode(system_new_appearance_modes)
-        
-    def choose_folder(self):
-        # функция для вызова диалога выбора папки
-        folder_path = filedialog.askdirectory()
-        self.directory_path.set(folder_path)
-        
-    def next_step(self):
-        # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
-
-        def checking_the_path(folder):
-            try:
-                UserConfigManager._checking_the_path(folder)
-                return True
-            except:
-                return False
-
-        #
-        if self.target_language.get() == self.lang["label_Select_language"] or not checking_the_path(self.directory_path.get()):
-            self.error_label.grid(row=7, column=0, sticky="s")
-            return None
-        
-        self.session = {
-            "path": self.directory_path.get(),
-            "to_language": self.supported_languages[ self.target_language.get() ],
-            "startwith": self.startwith,
-        }
-
-        print(self.session)
-
-        """for widget in self.winfo_children():
-            widget.destroy()
-            
-        self.build_main()"""
-
-        from time import sleep
-        sleep(5)
-        self.destroy()
         
     def run(self):
         # функция для запуска приложения
