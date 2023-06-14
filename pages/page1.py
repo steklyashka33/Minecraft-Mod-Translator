@@ -108,7 +108,7 @@ class Page1(CTkFrame):
         if self._command:
             self._command(self.session)
 
-    def checking_the_path(folder):
+    def checking_the_path(self, folder):
         try:
             UserConfigManager._checking_the_path(folder)
             return True

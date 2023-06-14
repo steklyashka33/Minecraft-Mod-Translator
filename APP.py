@@ -1,6 +1,7 @@
 from customtkinter import *
 from utils import *
 from pages import *
+from typing import Union
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
 import os
@@ -39,8 +40,10 @@ class App(CTk):
         '''image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
         self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))'''
 
+        current_page = Page1
+
         self.build_sidebar()
-        self.build_main()
+        self.build_main(current_page)
 
 
 
@@ -51,8 +54,8 @@ class App(CTk):
 
 
 
-    def build_main(self):
-        self.main_frame = Page1(self, self.data)
+    def build_main(self, page_class: Union[Page1, Page2]):
+        self.main_frame = page_class(self, self.data, command = self.next_page)
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
         """
@@ -62,6 +65,9 @@ class App(CTk):
 
         settings_button = CTkButton(self, text="", image=settings_image, command=settings_button_event)
         settings_button.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")"""
+    
+    def next_page(self, session):
+        self.main_frame.destroy()
     
     def update_language(self, language: str):
         if self.user_config["interface_language"] == language:
