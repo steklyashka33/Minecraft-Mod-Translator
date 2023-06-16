@@ -19,8 +19,8 @@ class Page1(CTkFrame):
 
                  background_corner_colors: Union[Tuple[Union[str, Tuple[str, str]]], None] = None,
                  overwrite_preferred_drawing_method: Union[str, None] = None,
+                 session: Union[dict, None] = None,
                  command: Union[Callable[[dict], None], None] = None,
-                 
                  **kwargs):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
         
@@ -90,6 +90,10 @@ class Page1(CTkFrame):
         button_font = CTkFont("Arial", size=22, weight="bold")
         next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang["label_next"], command=self.next_step)
         next_button.grid(row=8, column=0, sticky="n")
+
+        # set session data.
+        if session:
+            self._set_session_data(session)
         
     def next_step(self):
         # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
@@ -129,7 +133,7 @@ class Page1(CTkFrame):
         }
         return session
     
-    def set_session_data(self, session) -> None:
+    def _set_session_data(self, session) -> None:
         """set session data."""
 
         self.directory_path.set(session["path"])

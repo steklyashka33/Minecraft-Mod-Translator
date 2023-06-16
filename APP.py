@@ -40,22 +40,20 @@ class App(CTk):
         '''image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
         self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))'''
 
-        current_page = Page1
+        pages = [Page1, Page2]
+        self.pages = (i for i in pages)
+        self.current_page = next(self.pages)
 
         self.build_sidebar()
-        self.build_main(current_page)
-
-
+        self.build_main()
 
     def build_sidebar(self):
         #
         self.sidebar_frame = Sidebar(self, self.data, self.update_language, self.update_appearance_mode, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
-
-
-    def build_main(self, page_class: Union[Page1, Page2]):
-        self.main_frame = page_class(self, self.data, command = self.next_page)
+    def build_main(self, session: Union[dict, None] = None):
+        self.main_frame = self.current_page(self, data=self.data, session=session, command=self.next_page)
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
         """
@@ -67,7 +65,12 @@ class App(CTk):
         settings_button.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")"""
     
     def next_page(self, session):
-        self.main_frame.destroy()
+        try:
+            self.main_frame.destroy()
+            self.current_page = next(self.pages)
+            self.build_main(session)
+        except StopIteration:
+            pass
     
     def update_language(self, language: str):
         if self.user_config["interface_language"] == language:
@@ -81,9 +84,7 @@ class App(CTk):
         self.sidebar_frame.destroy()
         self.main_frame.destroy()
         self.build_sidebar()
-        self.build_main()
-
-        self.main_frame.set_session_data(session)
+        self.build_main(session)
 
     def update_appearance_mode(self, new_appearance_mode: str):
         if new_appearance_mode == self.user_config["appearance_mode"]:
