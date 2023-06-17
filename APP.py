@@ -18,8 +18,8 @@ class App(CTk):
 
         # создание главного окна
         self.title( self.config["title"] )
-        window_width = 600
-        window_height = 450
+        window_width = 640
+        window_height = 480
 
         set_appearance_mode(self.user_config["appearance_mode"])  # Modes: "System" (standard), "Dark", "Light"
         set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue")

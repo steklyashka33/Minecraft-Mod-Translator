@@ -8,9 +8,10 @@ list_of_appearance_modes:
 - Dark
 
 label_data_entry: Data entry
-label_enter_path: "Enter the path to the mods folder:"
+label_path_to_mods: "The path to the mods folder:"
 label_translation_language: "Translation language:"
-label_Select_language: Select a language
-label_startwith: "The translation will start with:"
+label_select_language: Select a language
+label_startwith: "The translation \nstart with:"
+last_path_to_save: "The path to the saved folder:"
 label_error: Incorrect input or not all fields were filled in
 label_next: Next
