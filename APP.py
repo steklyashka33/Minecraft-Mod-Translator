@@ -17,11 +17,11 @@ class App(CTk):
         self.config, self.user_config, _, _ = self.data.get()
 
         # создание главного окна
-        self.title( self.config["title"] )
+        self.title( self.config.title )
         window_width = 640
         window_height = 480
 
-        set_appearance_mode(self.user_config["appearance_mode"])  # Modes: "System" (standard), "Dark", "Light"
+        set_appearance_mode(self.user_config.appearance_mode)  # Modes: "System" (standard), "Dark", "Light"
         set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue")
 
         screen_width = self.winfo_screenwidth()
@@ -43,7 +43,7 @@ class App(CTk):
         pages = [Page1, Page2]
         self.pages = (i for i in pages)
         self.current_page = next(self.pages)
-        self.current_page = next(self.pages)
+        # self.current_page = next(self.pages)
 
         self.build_sidebar()
         self.build_main()
@@ -53,7 +53,7 @@ class App(CTk):
         self.sidebar_frame = Sidebar(self, self.data, self.update_language, self.update_appearance_mode, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
-    def build_main(self, session: Union[dict, None] = None):
+    def build_main(self, session: Union[SessionData, None] = None):
         self.main_frame = self.current_page(self, data=self.data, session=session, command=self.next_page)
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
@@ -74,11 +74,11 @@ class App(CTk):
             pass
     
     def update_language(self, language: str):
-        if self.user_config["interface_language"] == language:
+        if self.user_config.interface_language == language:
             return None
         
-        self.user_config["interface_language"] = language
-        UserConfigManager(self.main_folder).save_user_config(self.user_config)
+        self.user_config.interface_language = language
+        UserConfigManager(self.main_folder).save_user_config(vars(self.user_config))
 
         session = self.main_frame.get_session_data()
 
@@ -88,11 +88,11 @@ class App(CTk):
         self.build_main(session)
 
     def update_appearance_mode(self, new_appearance_mode: str):
-        if new_appearance_mode == self.user_config["appearance_mode"]:
+        if new_appearance_mode == self.user_config.appearance_mode:
             return 
         
-        self.user_config["appearance_mode"] = new_appearance_mode
-        UserConfigManager(self.main_folder).save_user_config(self.user_config)
+        self.user_config.appearance_mode = new_appearance_mode
+        UserConfigManager(self.main_folder).save_user_config(vars(self.user_config))
         
         set_appearance_mode(new_appearance_mode)
         

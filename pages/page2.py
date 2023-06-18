@@ -1,7 +1,8 @@
 from typing import Optional, Tuple, Union, Callable
 from customtkinter import *
-from .flipped_ctkcheckbox import FlippedCTkCheckBox
 from utils import *
+from .flipped_ctkcheckbox import FlippedCTkCheckBox
+from .session_data import SessionData
 
 class Page2(CTkFrame):
     def __init__(self,
@@ -37,33 +38,33 @@ class Page2(CTkFrame):
 
         # 
         header_font = CTkFont("Arial", size=30, weight="bold")
-        self.main_label = CTkLabel(self, text=self.lang["file_management"], font=header_font)
+        self.main_label = CTkLabel(self, text=self.lang.file_management, font=header_font)
         self.main_label.grid(row=0, column=0, sticky="s")
 
         # 
         hide_inactive_files_font = CTkFont("Arial", size=16, weight="bold")
-        self.hide_inactive_files_checkbox = CTkCheckBox(self, text=self.lang["hide_inactive_files"], font=hide_inactive_files_font)
+        self.hide_inactive_files_checkbox = CTkCheckBox(self, text=self.lang.hide_inactive_files, font=hide_inactive_files_font)
         self.hide_inactive_files_checkbox.grid(row=1, column=0)
 
         # create scrollable frame
-        self.scrollable_frame = CTkScrollableFrame(self, label_text=self.lang["file_selection"])
+        self.scrollable_frame = CTkScrollableFrame(self, label_text=self.lang.file_selection)
         self.scrollable_frame.grid(row=2, column=0, padx=50, pady=(0, 0), sticky="nsew")
         self.scrollable_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_frame_switches = []
         for i in range(100):
-            value = StringVar(value="on")
-            checkbox = FlippedCTkCheckBox(master=self.scrollable_frame, text=f"CTkCheckBox {i}", variable=value, onvalue="on", offvalue="")
+            value = IntVar(value=1)
+            checkbox = FlippedCTkCheckBox(master=self.scrollable_frame, text=f"CTkCheckBox {i}", variable=value)
             checkbox.grid(row=i, column=0, padx=10, pady=(0, 20))
             self.scrollable_frame_switches.append(checkbox)
         
         # 
         header_font = CTkFont("Arial", size=14, weight="bold")
-        self.main_label = CTkCheckBox(self, text=self.lang["save_untranslated_files"], font=header_font)
+        self.main_label = CTkCheckBox(self, text=self.lang.save_untranslated_files, font=header_font)
         self.main_label.grid(row=3, column=0)
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang["next"], command=self.next_step)
+        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
         next_button.grid(row=4, column=0, sticky="")
     
     def next_step(self):
@@ -75,22 +76,18 @@ class Page2(CTkFrame):
 
         path_to_mods = self.path_to_mods.get()
         path_to_save = self.path_to_save.get()
-        to_language = lang if (lang := self.target_language.get()) != self.lang["select_language"] else None
+        to_language = lang if (lang := self.target_language.get()) != self.lang.select_language else None
         startwith = self.startwith.get()
 
-        session = {
-            "path_to_mods": path_to_mods,
-            "path_to_save": path_to_save,
-            "to_language": to_language,
-            "startwith": startwith,
-        }
+        session = SessionData(path_to_mods, path_to_save, to_language, startwith)
+
         return session
     
     def _set_session_data(self, session) -> None:
         """set session data."""
         return
 
-        self.path_to_mods.set(session["path_to_mods"])
-        self.path_to_save.set(session["path_to_save"])
-        self.target_language.set(lang if (lang := session["to_language"]) else self.lang["select_language"])
-        self.startwith.set(session["startwith"])
+        self.path_to_mods.set(session.path_to_mods)
+        self.path_to_save.set(session.path_to_save)
+        self.target_language.set(lang if (lang := session.to_language) else self.lang.select_language)
+        self.startwith.set(session.startwith)
