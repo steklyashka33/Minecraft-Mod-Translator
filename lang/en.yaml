@@ -1,17 +1,22 @@
 language_name: English
 
-label_interface_language: "Interface Language:"
-label_appearance_mode: "Appearance Mode:"
+interface_language: "Interface Language:"
+appearance_mode: "Appearance Mode:"
 list_of_appearance_modes:
 - System
 - Light
 - Dark
 
-label_data_entry: Data entry
-label_path_to_mods: "The path to the mods folder:"
-label_translation_language: "Translation language:"
-label_select_language: Select a language
-label_startwith: "The translation \nstart with:"
+data_entry: Data entry
+path_to_mods: "The path to the mods folder:"
+translation_language: "Translation language:"
+select_language: Select a language
+startwith: "The translation \nstart with:"
 last_path_to_save: "The path to the saved folder:"
-label_error: Incorrect input or not all fields were filled in
-label_next: Next
+error: Incorrect input or not all fields were filled in
+next: Next
+
+file_selection: File selection
+hide_inactive_files: Hide inactive files
+file_management: File Management
+save_untranslated_files: Save untranslated files

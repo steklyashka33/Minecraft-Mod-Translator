@@ -37,7 +37,7 @@ class Sidebar(CTkFrame):
         font_label=CTkFont(size=15)
 
         values = list(self.user_config["dict_interface_language"].keys())
-        self.interface_language_label = CTkLabel(self, text=self.lang["label_interface_language"], anchor="w", font=font_label)
+        self.interface_language_label = CTkLabel(self, text=self.lang["interface_language"], anchor="w", font=font_label)
         self.interface_language_label.grid(row=2, column=0, padx=10, pady=(10, 0))
         self.interface_language_menu = CTkOptionMenu(self, values=values, command=self.update_language_callback)
         self.interface_language_menu.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
@@ -47,7 +47,7 @@ class Sidebar(CTkFrame):
         lang_list_of_appearance_modes = self.lang["list_of_appearance_modes"]
         self.dict_of_appearance_modes = dict(zip(lang_list_of_appearance_modes, system_list_of_appearance_modes))
         dict_of_system_appearance_modes = dict(zip(system_list_of_appearance_modes, lang_list_of_appearance_modes))
-        self.appearance_mode_label = CTkLabel(self, text=self.lang["label_appearance_mode"], anchor="w", font=font_label)
+        self.appearance_mode_label = CTkLabel(self, text=self.lang["appearance_mode"], anchor="w", font=font_label)
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
         self.appearance_mode_optionemenu = CTkOptionMenu(self, values=self.lang["list_of_appearance_modes"], command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10), sticky="ew")

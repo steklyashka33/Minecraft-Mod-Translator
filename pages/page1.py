@@ -37,7 +37,7 @@ class Page1(CTkFrame):
 
         # 
         header_font = CTkFont("Arial", size=38, weight="bold")
-        self.main_label = CTkLabel(self, text=self.lang["label_data_entry"], font=header_font)
+        self.main_label = CTkLabel(self, text=self.lang["data_entry"], font=header_font)
         self.main_label.grid(row=0, column=0, sticky="s")
 
         combobox_font = CTkFont("Arial", size=14)
@@ -47,7 +47,7 @@ class Page1(CTkFrame):
 
         # создание подписи к вводу пути к папке с модами
         path_to_mods_font = CTkFont("Arial", size=14)
-        entry_path_to_mods_label = CTkLabel(self, text=self.lang["label_path_to_mods"], font=path_to_mods_font)
+        entry_path_to_mods_label = CTkLabel(self, text=self.lang["path_to_mods"], font=path_to_mods_font)
         entry_path_to_mods_label.grid(row=1, column=0, sticky="s")
         # создание CTkComboBox для ввода пути к папке с модами
         self.path_to_mods = StringVar()
@@ -56,14 +56,14 @@ class Page1(CTkFrame):
         self.path_to_mods_entry.set(self.user_config["last_path_to_mods"])
 
         # создание подписи для выбора языков
-        language_label = CTkLabel(self, text=self.lang["label_translation_language"], font=label_font)
+        language_label = CTkLabel(self, text=self.lang["translation_language"], font=label_font)
         language_label.grid(row=3, column=0, sticky="s")
         # создание виджета CTkOptionMenu для выбора языков
         self.target_language = StringVar()
         language_font = CTkFont("Arial", size=18)
         self.language_optionmenu = CTkOptionMenu(self, width=widget_width, height=widget_height, font=language_font, variable=self.target_language)
         self.language_optionmenu.grid(row=4, column=0)
-        self.language_optionmenu.set(self.lang["label_select_language"])
+        self.language_optionmenu.set(self.lang["select_language"])
         list_supported_languages = self.supported_languages.keys()
         CTkScrollableDropdown(self.language_optionmenu, height = 200, values=list_supported_languages, frame_corner_radius=20)
 
@@ -80,14 +80,14 @@ class Page1(CTkFrame):
         startwith_frame.grid_columnconfigure((0, 1), weight=1)
         # создание подписи для приставки к переводам
         startwith_font_label = CTkFont("Arial", 16)
-        startwith_label = CTkLabel(startwith_frame, text=self.lang["label_startwith"], font=startwith_font_label, anchor='w')
+        startwith_label = CTkLabel(startwith_frame, text=self.lang["startwith"], font=startwith_font_label, anchor='w')
         startwith_label.grid(row=0, column=0, sticky="sew")
         # создание виджета CTkEntry для приставки к переводам
         self.startwith = StringVar(value=self.user_config["startwith"])
         self.startwith.trace_add("write", lambda *args: character_limit(self.startwith))
         startwith_entry_font = CTkFont("Arial", size=18, weight="bold")
         self.startwith_entry = CTkEntry(startwith_frame, width=widget_width//2.5, height=widget_height, font=startwith_entry_font, textvariable=self.startwith, justify='center')
-        self.startwith_entry.grid(row=0, column=1, sticky="es")
+        self.startwith_entry.grid(row=0, column=1, sticky="se")
 
         # создание подписи к вводу пути к папке созранений
         path_to_save_font = CTkFont("Arial", size=14)
@@ -100,10 +100,10 @@ class Page1(CTkFrame):
         self.path_to_save_entry.set(self.user_config["last_path_to_save"])
         
         # создание надписи о невозможности продолжить
-        self.error_label = CTkLabel(self, text_color="red", text=self.lang["label_error"], font=("Arial", 14))
+        self.error_label = CTkLabel(self, text_color="red", text=self.lang["error"], font=("Arial", 14))
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang["label_next"], command=self.next_step)
+        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang["next"], command=self.next_step)
         next_button.grid(row=9, column=0, sticky="n")
 
         # set session data.
@@ -114,7 +114,7 @@ class Page1(CTkFrame):
         # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
 
         #
-        if self.target_language.get() == self.lang["label_select_language"] or not self.checking_the_path(self.path_to_mods.get()):
+        if self.target_language.get() == self.lang["select_language"] or not self.checking_the_path(self.path_to_mods.get()):
             self.error_label.grid(row=8, column=0, sticky="s")
             return
         
@@ -140,7 +140,7 @@ class Page1(CTkFrame):
 
         path_to_mods = self.path_to_mods.get()
         path_to_save = self.path_to_save.get()
-        to_language = lang if (lang := self.target_language.get()) != self.lang["label_select_language"] else None
+        to_language = lang if (lang := self.target_language.get()) != self.lang["select_language"] else None
         startwith = self.startwith.get()
 
         session = {
@@ -156,5 +156,5 @@ class Page1(CTkFrame):
 
         self.path_to_mods.set(session["path_to_mods"])
         self.path_to_save.set(session["path_to_save"])
-        self.target_language.set(lang if (lang := session["to_language"]) else self.lang["label_select_language"])
+        self.target_language.set(lang if (lang := session["to_language"]) else self.lang["select_language"])
         self.startwith.set(session["startwith"])

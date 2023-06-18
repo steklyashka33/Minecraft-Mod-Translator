@@ -1,17 +1,22 @@
 language_name: Русский
 
-label_interface_language: "Язык интерфейса:"
-label_appearance_mode: "Режим внешнего вида:"
+interface_language: "Язык интерфейса:"
+appearance_mode: "Режим внешнего вида:"
 list_of_appearance_modes:
 - Системная
 - Светлая
 - Тёмная
 
-label_data_entry: Ввод данных
-label_path_to_mods: "Путь к папке с модами:"
-label_translation_language: "Язык перевода:"
-label_select_language: Выберите язык
-label_startwith: "Перевод \nначинается с:"
+data_entry: Ввод данных
+path_to_mods: "Путь к папке с модами:"
+translation_language: "Язык перевода:"
+select_language: Выберите язык
+startwith: "Перевод \nначинается с:"
 last_path_to_save: "Путь к папке с сохранениями:"
-label_error: Неверный ввод или не все поля были заполнены
-label_next: Продолжить
+error: Неверный ввод или не все поля были заполнены
+next: Продолжить
+
+file_selection: Выбор файлов
+hide_inactive_files: Скрыть неактивные файлы
+file_management: Управление файлами
+save_untranslated_files: Сохранять не переведённые файлы

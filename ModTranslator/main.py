@@ -2,9 +2,6 @@ __author__ = 'Steklyashka'
 
 #Изменение рабочей директории
 from os.path import dirname, abspath
-
-main_dir = dirname(abspath(__file__)) + "/"
-
 from Input import *
 from Translator import Translator
 from PathToLanguages import PathToLanguages
@@ -15,14 +12,14 @@ from os.path import isfile
 class Programm:
     
     @classmethod
-    def Start(cls, mod_files: list, directory: str, target_language: str, print =
+    def Start(cls, mod_files: list, directory: str, target_language: str, command =
                lambda file_name: print(f"{file_name} переведён")):
         """
         Запуск программы.
         mod_files - список переводимых модов с расширением jar,
         directory - директория с модами,
         target_language - язык на который нужно перевести,
-        print - функция, которая выводит промежуточный результат.
+        command - функция, которая получает промежуточный результат.
         """
 
         FROM_LANGUAGE = "en_us.json"
@@ -62,17 +59,13 @@ class Programm:
                     i = dict( zip( file_contents.keys(), translation ) )
 
                     #Сохранение.
-                    cls.__save(file, to_file, str(i))
-                    print(f"{file_name} переведён")
-    
-
-
-    @classmethod
-    def _StandardMode(cls, path, translations):
-        """Запуск программы в стандартном режиме."""
+                    cls._save(file, to_file, str(i))
+                    
+                    if command:
+                        command(file)
 
     @staticmethod
-    def __save(zip_file: str, file: str, string: str):
+    def _save(zip_file: str, file: str, string: str):
         """Сохранение изменений."""
         comment = "//This translation was made by the ModTranslator program.\n"
         ZipFileManager.adding_a_file( zip_file, file, comment + string )
@@ -102,6 +95,8 @@ if __name__ == '__main__':
     from os import remove
     from shutil import copyfile
 
+    main_dir = dirname(abspath(__file__)) + "/"
+
     files = listdir(directory)
 
     test_file = "test file.jar"
@@ -109,16 +104,16 @@ if __name__ == '__main__':
     verification_file = "check.jar"
 
     #Проверка на наличие тестового файла.
-    if isfile(main_dir+ test_file ):
+    if isfile(main_dir + test_file):
 
         #Удаление прошлой проверки.
-        if isfile(main_dir+ verification_file ):
-            remove(main_dir+ verification_file )
+        if isfile(main_dir + verification_file):
+            remove(main_dir + verification_file)
 
         #Копировать и переименовать тестовый файл. 
-        copyfile(main_dir+ test_file, main_dir+ verification_file )
+        copyfile(main_dir + test_file, main_dir + verification_file)
 
-        file = [ verification_file, "234" ]
+        file = [verification_file]
 
         #Запуск программы.
         Programm.Start(file, directory, target_language)

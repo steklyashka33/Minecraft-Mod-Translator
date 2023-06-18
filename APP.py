@@ -43,6 +43,7 @@ class App(CTk):
         pages = [Page1, Page2]
         self.pages = (i for i in pages)
         self.current_page = next(self.pages)
+        self.current_page = next(self.pages)
 
         self.build_sidebar()
         self.build_main()
