@@ -73,7 +73,7 @@ class Page2(CTkFrame):
         # 
         self.create_subfolder = IntVar(value=self._session.create_subfolder)
         save_untranslated_files_font = CTkFont("Arial", size=14)
-        create_subfolder_checkbox = CTkCheckBox(self, text=self.lang.create_subfolder, font=save_untranslated_files_font, variable=self.save_untranslated_files)
+        create_subfolder_checkbox = CTkCheckBox(self, text=self.lang.create_subfolder, font=save_untranslated_files_font, variable=self.create_subfolder)
         create_subfolder_checkbox.grid(row=4, column=0)
         
         # создание кнопки для продолжения
