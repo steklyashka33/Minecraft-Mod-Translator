@@ -1,4 +1,4 @@
-mod_translator_venv/
+.mod_translator_venv/
 __pycache__
 user_config.yaml
 test.py
