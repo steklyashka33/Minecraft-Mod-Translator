@@ -1,6 +1,6 @@
 __author__ = 'Steklyashka'
 
-from tool import *
+from .tool import *
 from os.path import dirname, basename
 
 class PathToLanguages:

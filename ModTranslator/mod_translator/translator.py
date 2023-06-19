@@ -1,13 +1,17 @@
 __author__ = 'Steklyashka'
 
-from googletrans import Translator as Tr
+from googletrans import Translator as google_Translator
 
 #pip3 install googletrans==3.1.0a0
 
 
-class Translator(Tr):
+class Translator(google_Translator):
 
-	def translate(self, text, dest='en', src='auto', **kwargs):
+	def translate(self,
+	       text: str,
+		   dest='en',
+		   src='auto',
+		   **kwargs):
 		"""Возращает экземпляр класса Translated с переводом."""
 
 		if type(text) is list:
@@ -17,7 +21,6 @@ class Translator(Tr):
 			self.kwargs = kwargs
 			
 			origin = text
-			translate = super().translate
 
 			connected_texts = self._join_text(origin)
 			translated_text = []
@@ -34,7 +37,7 @@ class Translator(Tr):
 			Translated.text = sum([i.text for i in translated_text], [])
 
 		else:
-			Translated = translate(text, dest, src, **kwargs)
+			Translated = super().translate(text, dest, src, **kwargs)
 			
 		return Translated
 	
@@ -59,10 +62,10 @@ class Translator(Tr):
 		return translated
 	
 	def _join_text(self, text: list) -> tuple[str]:
-		"""Соединяет текст раздилителем и проверяет его длинну
-		(у google translate ошраничение на 5000 символов за 1 перевод)."""
+		"""Соединяет текст раздилителем и проверяет его длинну."""
+		
 		connected_text = self._separator.join(text) #Соединяем текст раздилителем.
-		max_characters = 5000
+		max_characters = 5000 #google translate limit of 5000 characters
 
 		if len(connected_text) < max_characters:
 			return [connected_text]
@@ -90,11 +93,6 @@ if __name__ == '__main__':
   	"Eye Vine",
 	]
 
-	from time import time
-	start = time()
-
 	list_values = list(data)
 	translation = Translator().translate(list_values, dest='ru')
 	print(f"{translation}")
-
-	print("execution time:", time() - start)

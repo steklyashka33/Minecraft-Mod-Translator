@@ -2,23 +2,6 @@ __author__ = 'Steklyashka'
 
 import zipfile
 
-class FileManager:
-    
-    @staticmethod
-    def getFilesOfTheType(files: str, file_type: str):
-        """Возращает файлы нужного расширения."""
-
-        files_of_the_type = filter(lambda f: f.endswith(file_type),  files)
-
-        return files_of_the_type
-    
-    @staticmethod
-    def getFilePath(directory: str, name_file: str):
-        """Возращает путь к файлу."""
-        return directory + name_file
-
-
-
 class ZipFileManager:
     """Менеджер для работы с zip-файлами."""
 
@@ -43,22 +26,9 @@ class ZipFileManager:
     @staticmethod
     def adding_a_file(zip_file: str, file: str, string: str):
         """Добавляет файл в zip файл. """
-        #print(zip_file, file)
+        
         with zipfile.ZipFile(zip_file, "a", allowZip64=False) as z,  \
             z.open(file, "w") as f:
 
             f.write( string.encode('utf-8') )
 
-
-
-
-if __name__ == '__main__':
-
-    from os.path import dirname, abspath
-    main_dir = dirname(abspath(__file__))
-    
-    for i, j in JarManager(main_dir+r'/test.jar').getAll():
-        print(i,j)
-    
-    from time import sleep
-    sleep(100)
