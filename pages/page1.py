@@ -136,7 +136,7 @@ class Page1(CTkFrame):
         except NotADirectoryError:
             return False
     
-    def get_session_data(self) -> dict:
+    def get_session_data(self) -> SessionData:
         """returns session data."""
 
         path_to_mods = self.path_to_mods.get()

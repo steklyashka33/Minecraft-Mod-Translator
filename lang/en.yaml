@@ -16,7 +16,8 @@ last_path_to_save: "The path to the saved folder:"
 error: Incorrect input or not all fields were filled in
 next: Next
 
+file_management: File Management
 file_selection: File selection
 hide_inactive_files: Hide inactive files
-file_management: File Management
 save_untranslated_files: Save untranslated files
+create_subfolder: Create a subfolder in the saved folder

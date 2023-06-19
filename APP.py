@@ -43,7 +43,7 @@ class App(CTk):
         pages = [Page1, Page2]
         self.pages = (i for i in pages)
         self.current_page = next(self.pages)
-        # self.current_page = next(self.pages)
+        self.current_page = next(self.pages)
 
         self.build_sidebar()
         self.build_main()
@@ -54,6 +54,7 @@ class App(CTk):
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
     def build_main(self, session: Union[SessionData, None] = None):
+        session = SessionData(path_to_mods='C:/Users/PC/AppData/Roaming/.minecraft/versions/Vanila+/mods', path_to_save='C:\\Users\\PC\\Documents\\translations', to_language='Danish', startwith='(Auto)', hide_inactive_file=1, save_untranslated_files=0)
         self.main_frame = self.current_page(self, data=self.data, session=session, command=self.next_page)
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
