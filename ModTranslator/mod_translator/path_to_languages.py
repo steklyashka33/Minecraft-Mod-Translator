@@ -1,6 +1,6 @@
 __author__ = 'Steklyashka'
 
-from .tool import *
+from .zip_file_manager import *
 from os.path import dirname, basename
 
 class PathToLanguages:
@@ -11,7 +11,7 @@ class PathToLanguages:
         self._File = mod_file
         self.__folders, self.__List_of_translations = _Tools.getPathToLanguages( mod_file )
     
-    def getAll(self) -> list[   tuple[ str ], tuple[ list[str] ]   ]:
+    def getAll(self) -> tuple[ tuple[str], tuple[ list[str] ] ]:
         """Возращает zip[path, translations]."""
         return zip(self.__folders, self.__List_of_translations)
 
