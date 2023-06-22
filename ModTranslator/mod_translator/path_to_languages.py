@@ -1,7 +1,7 @@
 __author__ = 'Steklyashka'
 
-from .zip_file_manager import *
-from os.path import dirname, basename
+from .zip_file_manager import ZipFileManager
+import os
 
 class PathToLanguages:
     """Получает на вход полный путь к моду(игры minecraft),
@@ -33,10 +33,9 @@ class PathToLanguages:
     
     def isNecessaryTranslation(self, lang) -> bool:
         """Возращает True/False при существоввании или отсутствии нужного перевода."""
-        FROM_LANGUAGE = "en_us.json"
+        
         return not any([
-            (lang not in translations and \
-            FROM_LANGUAGE in translations)
+            lang not in translations \
                 for translations in self.__List_of_translations
                 ])
 
@@ -51,6 +50,7 @@ class _Tools:
         """Возращает переводы и их директорию."""
 
         PATH = 'assets/' #Директория
+        FROM_LANGUAGE = "en_us.json"
 
         #Чтение файла
         namelist = ZipFileManager.read_ZipFile(mod_file)
@@ -59,12 +59,15 @@ class _Tools:
         namelist = cls._getArchiveSlice(PATH, namelist)
 
         #Получение содержимого папок lang
-        func = lambda f: (s := f.split('/'))[-2] == 'lang' and s[-1]
+        func = lambda f: os.path.basename(os.path.dirname(f)) == 'lang' and os.path.basename(f)
         namelist = list( filter(func, namelist) )
 
         #Получение директорий файлов
-        func = lambda name: dirname(name)+'/'
-        folders = set(map( func, namelist ))
+        folders = cls._unique_folders(namelist)
+
+        #Проверка на наличае FROM_LANGUAGE
+        func = lambda f: os.path.join(f, FROM_LANGUAGE)
+        namelist = list( filter(func, namelist) )
         
         #Получение названий файлов
         List_of_translations = [cls._getArchiveDirectory(folder, namelist.copy()) for folder in folders]
@@ -72,12 +75,22 @@ class _Tools:
         return tuple(folders), tuple(List_of_translations)
     
     @classmethod
+    def _unique_folders(cls, path_list):
+        unique_folders_set = set()
+
+        for path in path_list:
+            folder = os.path.dirname(path)
+            unique_folders_set.add(folder)
+
+        return list(unique_folders_set)
+
+    @classmethod
     def _getArchiveDirectory(cls, directory: str, archive: list) -> list:
         """Возращает содержимое директории."""
         
         archive_slice = cls._getArchiveSlice(directory, archive)
 
-        func = lambda path_file: basename(path_file)
+        func = lambda path_file: os.path.basename(path_file)
         archive_directory = map(func, archive_slice)
 
         return list(archive_directory)
@@ -92,11 +105,3 @@ class _Tools:
         archive_slice = filter(func, archive)
 
         return list(archive_slice)
-
-if __name__ == '__main__':
-
-    from os.path import dirname, abspath
-    main_dir = dirname(abspath(__file__))
-
-    file = input('Enter the full path to the file: ') #r'C:\Users\PC\AppData\Roaming\.minecraft\versions\Create Flavored\mods\moreminecarts-1.5.4.jar'
-    print([i for i in PathToLanguages(file).getAll()])

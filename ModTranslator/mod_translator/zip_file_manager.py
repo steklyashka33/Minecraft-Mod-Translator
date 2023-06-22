@@ -18,8 +18,8 @@ class ZipFileManager:
         Получает zip файл и файл в нём лежащий.
         Возращает содержимое этого файла.
         """
-        with zipfile.ZipFile(zip_file, "r", allowZip64=False) as z,  \
-            z.open(file, "r") as f:
+        with zipfile.ZipFile(zip_file, "r", allowZip64=False) as zf,  \
+            zf.open(file, "r") as f:
 
             return f.read().decode('utf-8')
     
