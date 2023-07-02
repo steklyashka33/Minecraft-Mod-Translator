@@ -2,6 +2,7 @@ __author__ = 'Steklyashka'
 
 from typing import Optional, Tuple, Union, Callable
 from json import loads
+from shutil import copyfile
 import os
 from .translator import Translator
 from .zip_file_manager import ZipFileManager
@@ -37,7 +38,7 @@ class ModTranslator:
         for file_name in CheckModsTranslation(target_language_code,
                                               self._directory,
                                               mod_files,
-                                              self._exception_handler).get_list_of_untranslated_mods():
+                                              self._exception_handler).get_untranslated_mods():
 
             #Получение абсолютного пути мода.
             file_path = os.path.join(self._directory, file_name)
@@ -57,13 +58,20 @@ class ModTranslator:
                 i = dict( zip( file_contents.keys(), translation ) )
 
                 #Сохранение.
-                self._save(file_path, to_file, str(i))
+                self._save(file_name, to_file, str(i))
                 
                 if self._command:
                     self._command(file_name)
     
-    def _save(self, zip_file: str, file: str, string: str):
+    def _save(self, zip_file_name: str, file: str, string: str):
         """Saving changes."""
 
-        comment = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/mod-translator-for-minecraft"
-        ZipFileManager.adding_a_file( zip_file, file, comment + string )
+        COMMENT = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/mod-translator-for-minecraft"
+        zip_file = os.path.join(self._directory_of_saves, zip_file_name)
+
+        if not self._directory_of_saves is self._directory:
+            from_file_path = os.path.join(self._directory, zip_file_name)
+            to_file_path = os.path.join(self._directory_of_saves, zip_file_name)
+            copyfile(from_file_path, to_file_path)
+
+        ZipFileManager.adding_a_file( zip_file, file, COMMENT + string )

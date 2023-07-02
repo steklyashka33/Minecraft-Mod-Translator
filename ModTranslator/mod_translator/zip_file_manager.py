@@ -28,7 +28,7 @@ class ZipFileManager:
         """Добавляет файл в zip файл. """
         
         with zipfile.ZipFile(zip_file, "a", allowZip64=False) as z,  \
-            z.open(file, "w") as f:
+            z.open(file, "a") as f:
 
             f.write( string.encode('utf-8') )
 

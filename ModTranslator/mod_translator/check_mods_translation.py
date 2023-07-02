@@ -1,10 +1,8 @@
 import os
 from typing import Optional, Tuple, Union, Callable
 from .path_to_languages import PathToLanguages
-from functools import lru_cache
 
 class CheckModsTranslation:
-    @lru_cache(maxsize=3)
     def __init__(self, 
                  target_language_code: str,
                  directory: str,
@@ -14,9 +12,9 @@ class CheckModsTranslation:
         if not target_language_code.endswith(".json"):
             target_language_code += ".json"
         
-        self._list_of_translated_mods: list = []
-        self._list_of_untranslated_mods: list = []
-        self._list_of_mods_with_no_languages: list = []
+        self._translated_mods: list = []
+        self._untranslated_mods: list = []
+        self._mods_with_no_languages: list = []
         
         FROM_LANGUAGE = "en_us.json"
         self._directory = self._checking_the_path(directory)
@@ -40,27 +38,27 @@ class CheckModsTranslation:
             manager = PathToLanguages(file_path)
 
             if not manager.isFolderWithTranslations():
-                self._list_of_mods_with_no_languages.append(file_name)
+                self._mods_with_no_languages.append(file_name)
 
             elif manager.isNecessaryTranslation(target_language_code):
-                self._list_of_translated_mods.append(file_name)
+                self._translated_mods.append(file_name)
 
             else:
-                self._list_of_untranslated_mods.append(file_name)
+                self._untranslated_mods.append(file_name)
     
     def get_all(self):
-        return (self._list_of_translated_mods, 
-                self._list_of_untranslated_mods, 
-                self._list_of_mods_with_no_languages)
+        return (self._translated_mods, 
+                self._untranslated_mods, 
+                self._mods_with_no_languages)
 
-    def get_list_of_translated_mods(self):
-        return self._list_of_translated_mods
+    def get_translated_mods(self):
+        return self._translated_mods
     
-    def get_list_of_untranslated_mods(self):
-        return self._list_of_untranslated_mods
+    def get_untranslated_mods(self):
+        return self._untranslated_mods
     
-    def get_list_of_mods_with_no_languages(self):
-        return self._list_of_mods_with_no_languages
+    def get_mods_with_no_languages(self):
+        return self._mods_with_no_languages
 
     @staticmethod
     def _filter_files_by_extension(file_names, desired_extension):

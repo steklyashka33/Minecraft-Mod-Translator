@@ -1,2 +1,2 @@
 
-from .mod_translator import ModTranslator
+from .mod_translator import *
