@@ -7,7 +7,7 @@ class SessionData:
     to_language: str
     startwith: str
     
-    hide_inactive_file: str = 1
+    inactive_files_state: str = 1
     save_untranslated_files: str = 0
     create_subfolder: str = 1
 

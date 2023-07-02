@@ -1,9 +1,9 @@
 from typing import Optional, Tuple, Union, Callable
+from threading import Timer
 from customtkinter import *
 from utils import *
 from .folder_dialog_combobox import FolderDialogComboBox
 from .session_data import SessionData
-
 
 class Page1(CTkFrame):
     def __init__(self,
@@ -102,6 +102,7 @@ class Page1(CTkFrame):
         
         # создание надписи о невозможности продолжить
         self.error_label = CTkLabel(self, text_color="red", text=self.lang.error, font=("Arial", 14))
+        self.timer = None
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
         next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
@@ -115,19 +116,25 @@ class Page1(CTkFrame):
         # функция, которая будет вызываться при нажатии на кнопку "Продолжить"
 
         #
+        if self.timer:
+            self.timer.cancel()
+
+        #
         if self.target_language.get() == self.lang.select_language or not self.checking_the_path(self.path_to_mods.get()):
             self.error_label.grid(row=8, column=0, sticky="s")
+            self.timer = Timer(5, self._error_label_timer)
+            self.timer.start()
             return
         
-        self.session = self.get_session_data()
+        session = self.get_session_data()
 
-        self.user_config.last_path_to_mods = self.session.path_to_mods
-        self.user_config.last_path_to_save = self.session.path_to_save
-        self.user_config.startwith = self.session.startwith
+        self.user_config.last_path_to_mods = session.path_to_mods
+        self.user_config.last_path_to_save = session.path_to_save
+        self.user_config.startwith = session.startwith
         UserConfigManager(self.main_folder).save_user_config(vars(self.user_config))
 
         if self._command:
-            self._command(self.session)
+            self._command(session)
 
     def checking_the_path(self, folder):
         try:
@@ -155,3 +162,8 @@ class Page1(CTkFrame):
         self.path_to_save.set(session.path_to_save)
         self.target_language.set(lang if (lang := session.to_language) else self.lang.select_language)
         self.startwith.set(session.startwith)
+    
+    def _error_label_timer(self) -> None:
+        """Removes error_label."""
+
+        self.error_label.grid_forget()

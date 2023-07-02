@@ -18,6 +18,6 @@ next: Next
 
 file_management: File Management
 file_selection: File selection
-hide_inactive_files: Hide inactive files
+inactive_files_state: Hide inactive files
 save_untranslated_files: Save untranslated files
 create_subfolder: Create a subfolder in the saved folder

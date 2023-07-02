@@ -18,6 +18,6 @@ next: Продолжить
 
 file_management: Управление файлами
 file_selection: Выбор файлов
-hide_inactive_files: Скрыть неактивные файлы
+inactive_files_state: Скрыть неактивные файлы
 save_untranslated_files: Сохранять не переведённые файлы
 create_subfolder: Создать подпапку в папке с сохранениями

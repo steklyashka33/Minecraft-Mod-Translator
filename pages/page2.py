@@ -1,7 +1,9 @@
 from typing import Optional, Tuple, Union, Callable
+from pathlib import Path
 from customtkinter import *
 from utils import *
-from .flipped_ctkcheckbox import FlippedCTkCheckBox
+from ModTranslator import *
+from .create_switches import CreateSwitches
 from .session_data import SessionData
 
 class Page2(CTkFrame):
@@ -23,6 +25,9 @@ class Page2(CTkFrame):
                  command: Union[Callable[[dict], None], None] = None,
                  **kwargs):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
+
+        from time import time
+        starts = time()
 
         self.grid_columnconfigure(0, weight=1, uniform="fred")
         self.grid_rowconfigure(0, weight=4, uniform="fred")
@@ -46,10 +51,10 @@ class Page2(CTkFrame):
         main_label.grid(row=0, column=0, sticky="s")
 
         # 
-        self.hide_inactive_files = IntVar(value=self._session.hide_inactive_file)
-        hide_inactive_files_font = CTkFont("Arial", size=16, weight="bold")
-        hide_inactive_files_checkbox = CTkCheckBox(self, text=self.lang.hide_inactive_files, font=hide_inactive_files_font, variable=self.hide_inactive_files)
-        hide_inactive_files_checkbox.grid(row=1, column=0)
+        self.inactive_files_state = IntVar(value=self._session.inactive_files_state)
+        inactive_files_state_font = CTkFont("Arial", size=16, weight="bold")
+        inactive_files_state_checkbox = CTkCheckBox(self, text=self.lang.inactive_files_state, font=inactive_files_state_font, command=self.inactive_files_event, variable=self.inactive_files_state)
+        inactive_files_state_checkbox.grid(row=1, column=0)
 
         # create scrollable frame
         self.scrollable_frame = CTkScrollableFrame(self, label_text=self.lang.file_selection)
@@ -57,13 +62,21 @@ class Page2(CTkFrame):
         self.scrollable_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_frame._parent_frame.configure(width=scrollable_frame_width)
         self.scrollable_frame._parent_frame.grid_propagate(False)
-        self.scrollable_frame_switches = []
-        for i in range(100):
-            value = IntVar(value=1)
-            checkbox = FlippedCTkCheckBox(master=self.scrollable_frame, text=f"CTkCheckBox {i}", variable=value)
-            checkbox.grid(row=i, column=0, padx=10, pady=(0, 10), sticky="ew")
-            self.scrollable_frame_switches.append(checkbox)
-        
+        #create switches
+        start = time()
+        mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
+                                              self._session.path_to_mods,
+                                              exception_handler=self._exception_handler)
+        print(time()-start)
+        untranslated_mods = mods_translation.get_untranslated_mods()
+        untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
+        other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
+        other_names_of_mods = [Path(mod).stem for mod in other_mods]
+        max_length = 30
+        self.normal_switches = CreateSwitches(self.scrollable_frame, untranslated_names_of_mods, start=1, max_length=max_length)
+        self.disabled_switches = CreateSwitches(self.scrollable_frame, other_names_of_mods, start=len(self.normal_switches.get()), state=DISABLED, value=False, max_length=max_length)
+        self.inactive_files_event()
+
         # 
         self.save_untranslated_files = IntVar(value=self._session.save_untranslated_files)
         save_untranslated_files_font = CTkFont("Arial", size=14)
@@ -72,14 +85,22 @@ class Page2(CTkFrame):
         
         # 
         self.create_subfolder = IntVar(value=self._session.create_subfolder)
-        save_untranslated_files_font = CTkFont("Arial", size=14)
-        create_subfolder_checkbox = CTkCheckBox(self, text=self.lang.create_subfolder, font=save_untranslated_files_font, variable=self.create_subfolder)
+        create_subfolder_font = CTkFont("Arial", size=14)
+        create_subfolder_checkbox = CTkCheckBox(self, text=self.lang.create_subfolder, font=create_subfolder_font, variable=self.create_subfolder)
         create_subfolder_checkbox.grid(row=4, column=0)
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
         next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
         next_button.grid(row=5, column=0, sticky="")
+
+        print(time()-starts)
+    
+    def inactive_files_event(self):
+        if self.inactive_files_state.get():
+            self.disabled_switches.hide()
+        else:
+            self.disabled_switches.show()
     
     def next_step(self):
         pass
@@ -94,3 +115,6 @@ class Page2(CTkFrame):
         session.set(hide_inactive_files=hide_inactive_files, save_untranslated_files=save_untranslated_files)
 
         return session
+    
+    def _exception_handler(self, file_name):
+        pass

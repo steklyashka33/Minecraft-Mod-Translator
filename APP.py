@@ -15,7 +15,9 @@ class App(CTk):
         self.data = GetData(self.main_folder)
         
         self.config, self.user_config, _, i = self.data.get()
-        print(dict( [[a["google_code"], a["mc_code"]] for a in i.values()] ))
+
+        # get supported_languages
+        # print(dict( [[a["google_code"], a["mc_code"]] for a in i.values()] ))
 
         # создание главного окна
         self.title( self.config.title )
@@ -31,7 +33,7 @@ class App(CTk):
         x_cordinate = (screen_width - window_width)//2
         y_cordinate = (screen_height - window_height)//2
         self.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
-        #self.resizable(0, 0)
+        self.resizable(0, 0)
         
 		# configure grid layout (3x4)
         self.grid_columnconfigure(0, weight=3, uniform="fred")
@@ -44,7 +46,7 @@ class App(CTk):
         pages = [Page1, Page2]
         self.pages = (i for i in pages)
         self.current_page = next(self.pages)
-        self.current_page = next(self.pages)
+        # self.current_page = next(self.pages)
 
         self.build_sidebar()
         self.build_main()
@@ -55,7 +57,6 @@ class App(CTk):
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
 
     def build_main(self, session: Union[SessionData, None] = None):
-        session = SessionData(path_to_mods='C:/Users/PC/AppData/Roaming/.minecraft/versions/Vanila+/mods', path_to_save='C:\\Users\\PC\\Documents\\translations', to_language='Danish', startwith='(Auto)', hide_inactive_file=1, save_untranslated_files=0)
         self.main_frame = self.current_page(self, data=self.data, session=session, command=self.next_page)
         self.main_frame.grid(row=0, column=1, padx=20, pady=20, sticky="nsew")
 
