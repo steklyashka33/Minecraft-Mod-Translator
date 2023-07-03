@@ -49,9 +49,9 @@ class Page2(CTkFrame):
         main_label.grid(row=0, column=0, sticky="s")
 
         # 
-        self.inactive_files_state = IntVar(value=self._session.inactive_files_state)
+        self.inactive_files_state = BooleanVar(value=self._session.inactive_files_state)
         inactive_files_state_font = CTkFont("Arial", size=16, weight="bold")
-        inactive_files_state_checkbox = CTkCheckBox(self, text=self.lang.inactive_files_state, font=inactive_files_state_font, command=self._inactive_files_event, variable=self.inactive_files_state)
+        inactive_files_state_checkbox = CTkSwitch(self, text=self.lang.inactive_files_state, font=inactive_files_state_font, command=self._inactive_files_event, variable=self.inactive_files_state)
         inactive_files_state_checkbox.grid(row=1, column=0)
 
         # create scrollable frame
@@ -61,19 +61,20 @@ class Page2(CTkFrame):
         scrollable_frame._parent_frame.configure(width=scrollable_frame_width)
         scrollable_frame._parent_frame.grid_propagate(False)
         #build switches
+        self.disabled_switches = None
         self.thread = Thread(target=self._build_switches_for_scrollable_frame, args=(scrollable_frame,))
         self.thread.start()
 
         # 
-        self.save_untranslated_files = IntVar(value=self._session.save_untranslated_files)
+        self.save_untranslated_files = BooleanVar(value=self._session.save_untranslated_files)
         save_untranslated_files_font = CTkFont("Arial", size=14)
-        save_untranslated_files_checkbox = CTkCheckBox(self, text=self.lang.save_untranslated_files, font=save_untranslated_files_font, variable=self.save_untranslated_files)
+        save_untranslated_files_checkbox = CTkSwitch(self, text=self.lang.save_untranslated_files, font=save_untranslated_files_font, variable=self.save_untranslated_files)
         save_untranslated_files_checkbox.grid(row=3, column=0)
         
         # 
-        self.create_subfolder = IntVar(value=self._session.create_subfolder)
+        self.create_subfolder = BooleanVar(value=self._session.create_subfolder)
         create_subfolder_font = CTkFont("Arial", size=14)
-        create_subfolder_checkbox = CTkCheckBox(self, text=self.lang.create_subfolder, font=create_subfolder_font, variable=self.create_subfolder)
+        create_subfolder_checkbox = CTkSwitch(self, text=self.lang.create_subfolder, font=create_subfolder_font, variable=self.create_subfolder)
         create_subfolder_checkbox.grid(row=4, column=0)
         
         # создание кнопки для продолжения
@@ -81,7 +82,10 @@ class Page2(CTkFrame):
         next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
         next_button.grid(row=5, column=0, sticky="")
 
-    def _inactive_files_event(self):
+    def _inactive_files_event(self) -> None:
+        if self.disabled_switches is None:
+            return
+        
         if self.inactive_files_state.get():
             self.disabled_switches.hide()
         else:
@@ -102,7 +106,7 @@ class Page2(CTkFrame):
         #create switches
         max_length = 30
         self.normal_switches = CreateSwitches(master, untranslated_names_of_mods, start=1, max_length=max_length)
-        self.disabled_switches = CreateSwitches(master, other_names_of_mods, start=len(self.normal_switches.get()), state=DISABLED, value=False, max_length=max_length)
+        self.disabled_switches = CreateSwitches(master, other_names_of_mods, start=len(self.normal_switches.get_switches()), state=DISABLED, value=False, max_length=max_length)
         
         #hide disabled switches
         self._inactive_files_event()
@@ -111,21 +115,28 @@ class Page2(CTkFrame):
         if self.thread.is_alive():
             print("wait")
             return
+        
+        variable_switches = self.normal_switches.get_variable_switches()
+        mods = [text for text, variable in variable_switches if variable]
 
-        switches = self.normal_switches.get()
-        mods = {switch.cget("text"): switch.get() for switch in switches}
-        print(mods)
+        session = self.get_session_data()
+        session.set(mods=mods)
     
     def get_session_data(self) -> SessionData:
         """returns session data."""
-        return
+        self.thread.join()
 
-        hide_inactive_files = self.hide_inactive_files.get()
+        inactive_files_state = self.inactive_files_state.get()
         save_untranslated_files = self.save_untranslated_files.get()
+        create_subfolder = self.create_subfolder.get()
+        normal_switches = self.normal_switches
 
-        session.set(hide_inactive_files=hide_inactive_files, save_untranslated_files=save_untranslated_files)
+        self._session.set(inactive_files_state=inactive_files_state, 
+                          save_untranslated_files=save_untranslated_files,
+                          create_subfolder=create_subfolder,
+                          normal_switches=normal_switches)
 
-        return session
+        return self._session
     
     def _exception_handler(self, file_name):
-        pass
+        print(f"error {file_name}")

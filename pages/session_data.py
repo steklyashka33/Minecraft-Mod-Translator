@@ -7,9 +7,10 @@ class SessionData:
     to_language: str
     startwith: str
     
-    inactive_files_state: str = 1
-    save_untranslated_files: str = 0
-    create_subfolder: str = 1
+    inactive_files_state: bool = True
+    save_untranslated_files: bool = False
+    create_subfolder: bool = True
+    mods: list = None
 
     def set(self, **kwargs):
         for key, value in kwargs.items():
