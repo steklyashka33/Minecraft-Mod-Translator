@@ -94,19 +94,28 @@ class Page2(CTkFrame):
     def _build_switches_for_scrollable_frame(self, master):
         """create switches for scrollable frame."""
 
-        #get mods
-        mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
-                                              self._session.path_to_mods,
-                                              exception_handler=self._exception_handler)
-        untranslated_mods = mods_translation.get_untranslated_mods()
-        untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
-        other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
-        other_names_of_mods = [Path(mod).stem for mod in other_mods]
+        if self._session.normal_switches is None and self._session.disabled_switches is None:
+            #get mods
+            mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
+                                                self._session.path_to_mods,
+                                                exception_handler=self._exception_handler)
+            untranslated_mods = mods_translation.get_untranslated_mods()
+            untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
+            other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
+            other_names_of_mods = [Path(mod).stem for mod in other_mods]
+            #get values
+            normal_switches_values = True
+        else:
+            #get mods
+            untranslated_names_of_mods = [name for name, value in self._session.normal_switches]
+            other_names_of_mods = [name for name, value in self._session.disabled_switches]
+            #get values
+            normal_switches_values = [value for name, value in self._session.normal_switches]
 
         #create switches
         max_length = 30
-        self.normal_switches = CreateSwitches(master, untranslated_names_of_mods, start=1, max_length=max_length)
-        self.disabled_switches = CreateSwitches(master, other_names_of_mods, start=len(self.normal_switches.get_switches()), state=DISABLED, value=False, max_length=max_length)
+        self.normal_switches = CreateSwitches(master, untranslated_names_of_mods, start=0, values=normal_switches_values, max_length=max_length)
+        self.disabled_switches = CreateSwitches(master, other_names_of_mods, start=len(self.normal_switches.get_switches()), state=DISABLED, values=False, max_length=max_length)
         
         #hide disabled switches
         self._inactive_files_event()
@@ -124,17 +133,22 @@ class Page2(CTkFrame):
     
     def get_session_data(self) -> SessionData:
         """returns session data."""
-        self.thread.join()
+        if self.thread.is_alive():
+            self.thread.join()
+        else:
+            normal_switches_data = self.normal_switches.get_variable_switches()
+            disabled_switches_data = self.disabled_switches.get_variable_switches()
+            self._session.set(normal_switches=normal_switches_data,
+                              disabled_switches=disabled_switches_data)
 
+        #get values
         inactive_files_state = self.inactive_files_state.get()
         save_untranslated_files = self.save_untranslated_files.get()
         create_subfolder = self.create_subfolder.get()
-        normal_switches = self.normal_switches
 
         self._session.set(inactive_files_state=inactive_files_state, 
                           save_untranslated_files=save_untranslated_files,
-                          create_subfolder=create_subfolder,
-                          normal_switches=normal_switches)
+                          create_subfolder=create_subfolder)
 
         return self._session
     

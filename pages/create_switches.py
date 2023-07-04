@@ -1,16 +1,19 @@
 from typing import Optional, Tuple, Union, Callable
 from tkinter import NORMAL, BooleanVar
-from threading import Thread
+from threading import Thread, currentThread
 from .flipped_ctkcheckbox import FlippedCTkCheckBox
 
 class CreateSwitches:
     def __init__(self,
                  master: any,
-                 texts: list,
+                 texts: list[str],
                  start: int = 0,
                  state: str = NORMAL,
-                 value: bool = True,
+                 values: Union[bool, list[bool]] = True,
                  max_length: int = 30):
+                 
+        from time import time
+        self.start = time()
         
         indexes = range(len(texts))
         self._switches: list[FlippedCTkCheckBox] = []
@@ -18,22 +21,34 @@ class CreateSwitches:
         self._master = master
         self._start = start
         self._state = state
-        self._value = value
         self._max_length = max_length
 
-        threads: list[Thread] = []
-        
-        for index, text in zip(indexes, texts):
-            thread = Thread(target=self._build_switch, args=(index, text))
-            thread.start()
-            threads.append(thread)
-        
-        for thread in threads:
-            thread.join()
+        self._threads: list[Thread] = []
 
-    def _build_switch(self, index, text):
+        if isinstance(values, bool):
+            value = values
+            for index, text in zip(indexes, texts):
+                self._create_thread(index, text, value)
+        elif isinstance(values, list) and all(isinstance(value, bool) for value in values):
+            for index, text, value in zip(indexes, texts, values):
+                self._create_thread(index, text, value)
+        else:
+            raise TypeError("The 'values' argument should be either a Boolean value (bool) or a list of Boolean values (list[bool]), \
+                            and its length should match the length of the 'texts' list.")
+        
+        for thread in self._threads:
+            thread.join()
+        
+        print("the work is completed in", time()-self.start)
+    
+    def _create_thread(self, index, text, value):
+            thread = Thread(target=self._build_switch, args=(index, text, value))
+            thread.start()
+            self._threads.append(thread)
+
+    def _build_switch(self, index, text, value):
             _text = text if len(text) <= self._max_length else text[:self._max_length] + "..."
-            _value = BooleanVar(value=self._value)
+            _value = BooleanVar(value=value)
             checkbox = FlippedCTkCheckBox(master=self._master, text=f"{_text}",  state=self._state, variable=_value)
             checkbox.grid(row=(self._start + index), column=0, padx=10, pady=(0, 10), sticky="ew")
             self._switches.append(checkbox)
