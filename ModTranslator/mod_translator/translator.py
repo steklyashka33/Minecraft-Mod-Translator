@@ -1,6 +1,11 @@
 __author__ = 'Steklyashka'
 
+from typing import Optional, Tuple, Union, Callable
+from googletrans.models import Translated
 from googletrans import Translator as google_Translator
+import sys
+
+sys.setrecursionlimit(100)
 
 #pip3 install googletrans==3.1.0a0
 
@@ -8,10 +13,10 @@ from googletrans import Translator as google_Translator
 class Translator(google_Translator):
 
 	def translate(self,
-	       text: str,
+	       text: Union[str, list[str]],
 		   dest='en',
 		   src='auto',
-		   **kwargs):
+		   **kwargs) -> Union[str, list[str]]:
 		"""Возращает экземпляр класса Translated с переводом."""
 
 		if type(text) is list:
@@ -20,69 +25,65 @@ class Translator(google_Translator):
 			self.src = src
 			self.kwargs = kwargs
 			
-			origin = text
-
-			connected_texts = self._join_text(origin)
-			translated_text = []
-			#print(connected_texts)
-
-			for connected_text in connected_texts:
-				translated_text.append(
-					self._text_translation(connected_text)
-				)
+			list_texts = self._check_string_limit(text)
+			if list_texts == -1: # Пойманая ошибка
+				return text
+			translated_texts = [self._text_translation(texts) for texts in list_texts]
 			
-			#Берём за основу первый элемент списка
-			Translated = translated_text[0]
-			#Изменяем текст на переведённое
-			Translated.text = sum([i.text for i in translated_text], [])
+			#Соединяем переведённые тексты
+			return sum(translated_texts, [])
 
 		else:
-			Translated = super().translate(text, dest, src, **kwargs)
-			
-		return Translated
+			return super().translate(text, dest, src, **kwargs).text
 	
-	def _text_translation(self, text: str) -> list[str]:
-		"""Переводит текст и разделяет его."""
-		
-		#Находим длину первоначального текста
-		len_text = len(self._split_text(text))
+	def _text_translation(self, texts: list[str]) -> list[str]:
+		"""Переводит текст."""
 
-		#Переводим текст получая 
-		translated = super().translate(text, self.dest, self.src, **self.kwargs)
-		#Разделяем переаедённый текст
-		translated.text = list(map(lambda s: s.strip(), self._split_text(translated.text)))
+		#Соединяем тексты раздилителем
+		connected_text = self._join_text(texts)
+		#Находим длину первоначального текста
+		len_text = len(texts)
+
+		#Переводим текст
+		translated = super().translate(connected_text, self.dest, self.src, **self.kwargs)
+		#Разделяем переведённый текст разделителем
+		result = self._split_text(translated.text)
 		
 		#Сверяем длину переведённого и не переведённого текста.
-		if len(translated.text) != len_text:
-			translated.text = sum(
-				self._text_translation( text[ :len(text)//2 ] ).text,
-				self._text_translation( text[ len(text)//2: ] ).text
-			)
-		
-		return translated
-	
-	def _join_text(self, text: list) -> tuple[str]:
-		"""Соединяет текст раздилителем и проверяет его длинну."""
-		
-		connected_text = self._separator.join(text) #Соединяем текст раздилителем.
-		max_characters = 5000 #google translate limit of 5000 characters
-
-		if len(connected_text) < max_characters:
-			return [connected_text]
-		
+		if len(result) != len_text:
+			translation1 = self._text_translation( texts[ :len_text//2 ] )
+			translation2 = self._text_translation( texts[ len_text//2: ] )
+			return translation1 + translation2
 		else:
-			text1 = self._join_text( text[ :len(text)//2 ] )
-			text2 = self._join_text( text[ len(text)//2: ] )
-			
-			#Если в списке список:
-			if type(text1[0]) is list: text1[0]
-			if type(text2[0]) is list: text2[0]
-
-			return sum([text1, text2], [])
+			return result
 	
-	def _split_text(self, text: str) -> str:
+	def _check_string_limit(self, texts: list[str]) -> list[ list[str] ]:
+		"""Проверяет на превышение лимита и возращает списки, которые не превышают лимит."""
+
+		texts_lenght = len(texts)
+		try:
+			connected_text = self._join_text(texts)
+		except TypeError: # texts имеет элементы не типа str
+			return -1
+		connected_text_lenght = len(connected_text)
+		self.max_characters = 5000 # google translate limit of 5000 characters
+
+		if connected_text_lenght < self.max_characters:
+			return [connected_text]
+		else:
+			text1 = self._check_string_limit( texts[ :texts_lenght//2 ] )
+			text2 = self._check_string_limit( texts[ texts_lenght//2: ] )
+			return text1 + text2
+	
+	def _join_text(self, texts: list) -> str:
+		"""Соединяет тексты раздилителем."""
+		return self._separator.join(texts)
+	
+	def _split_text(self, text: str) -> list[str]:
 		"""Разделят текст по раздилителю."""
-		return text.split(self._separator.strip())
+		split_text = text.split(self._separator.strip())
+		strip_function = lambda s: s.strip()
+		return list(map(strip_function, split_text)) #обрезаем текст от пробелов
 
 
 if __name__ == '__main__':
@@ -93,6 +94,5 @@ if __name__ == '__main__':
   	"Eye Vine",
 	]
 
-	list_values = list(data)
-	translation = Translator().translate(list_values, dest='ru')
+	translation = Translator().translate(data, dest='ru')
 	print(f"{translation}")

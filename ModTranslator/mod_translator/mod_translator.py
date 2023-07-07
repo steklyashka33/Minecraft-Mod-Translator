@@ -11,17 +11,27 @@ from .check_mods_translation import CheckModsTranslation
 
 class ModTranslator:
     def __init__(self,
-                 supported_languages: Union[dict, None],
+                 supported_languages: Union[dict, None] = None,
                  exception_handler: Union[Callable[[Exception, str], None], None] = None):
-        self._supported_languages = supported_languages
+        self.SUPPORT_LANGUAGES = self._load_supported_languages()
+        self._supported_languages = supported_languages if supported_languages else self.SUPPORT_LANGUAGES
         self._exception_handler = exception_handler
+    
+    def _load_supported_languages(self):
+        # Получаем путь к текущей директории
+        main_dir = os.path.dirname(os.path.abspath(__file__))
+
+        with open(os.path.join(main_dir, "supported_languages.json"), 'r', encoding="utf8") as f:
+            SUPPORT_LANGUAGES = loads(f.read())
+        
+        return SUPPORT_LANGUAGES
 
     def translate(self,
                  target_language: str,
                  directory: str,
                  mod_files: list[str] = None,
                  directory_of_saves: Union[str, None] = None,
-                 command: Union[Callable[[dict], None], None] = None):
+                 command: Union[Callable[[str], None], None] = None):
         """
         target_language - язык на который нужно перевести,
         directory - директория с модами,
@@ -30,14 +40,17 @@ class ModTranslator:
         """
 
         FROM_LANGUAGE = "en_us.json"
-        target_language_code = self._supported_languages[target_language]
+        target_language_code: str = self._supported_languages[target_language]
+        if not target_language_code.endswith(".json"):
+            target_language_code += ".json"
         self._directory = directory
+        self._mod_files = self._adding_extension_to_files(mod_files, ".jar")
         self._directory_of_saves = CheckModsTranslation._checking_the_path(directory_of_saves) if directory_of_saves else self._directory
         self._command = command
 
         for file_name in CheckModsTranslation(target_language_code,
                                               self._directory,
-                                              mod_files,
+                                              self._mod_files,
                                               self._exception_handler).get_untranslated_mods():
 
             #Получение абсолютного пути мода.
@@ -52,21 +65,31 @@ class ModTranslator:
                 file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(file_path, from_file))
 
                 #Получение перевода.
-                translation = Translator().translate( list(file_contents.values()), target_language ).text
+                texts = list(file_contents.values())
+                translation = Translator().translate( texts, target_language )
+
+                if texts is translation:
+                    print(f"unable to translate {file_name} due to broken structure.")
 
                 #Подстановка переводов к ключам.
-                i = dict( zip( file_contents.keys(), translation ) )
+                result = dict( zip( file_contents.keys(), translation ) )
 
                 #Сохранение.
-                self._save(file_name, to_file, str(i))
+                self._save(file_name, to_file, str(result))
                 
                 if self._command:
                     self._command(file_name)
     
+    @staticmethod
+    def _adding_extension_to_files(file_names, desired_extension):
+        fun = lambda file: file if file.endswith(desired_extension) else file+desired_extension
+        files = list(map(fun, file_names))
+        return files
+    
     def _save(self, zip_file_name: str, file: str, string: str):
         """Saving changes."""
 
-        COMMENT = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/mod-translator-for-minecraft"
+        COMMENT = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/mod-translator-for-minecraft\n"
         zip_file = os.path.join(self._directory_of_saves, zip_file_name)
 
         if not self._directory_of_saves is self._directory:
