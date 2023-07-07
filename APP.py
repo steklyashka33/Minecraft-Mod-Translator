@@ -43,7 +43,7 @@ class App(CTk):
         '''image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
         self.image = CTkImage(Image.open(os.path.join(image_path, "light_conductor.png")), size=(26, 26))'''
 
-        pages = [Page1, Page2]
+        pages = [Page1, Page2, Page3]
         self.pages = (i for i in pages)
         self.current_page = next(self.pages)
         # self.current_page = next(self.pages)

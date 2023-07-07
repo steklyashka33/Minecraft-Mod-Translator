@@ -21,3 +21,5 @@ file_selection: Выбор файлов
 inactive_files_state: Скрыть неактивные файлы
 save_untranslated_files: Сохранять не переведённые файлы
 create_subfolder: Создать подпапку в папке с сохранениями
+
+log: Журнал

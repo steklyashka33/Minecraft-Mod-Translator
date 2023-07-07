@@ -21,3 +21,5 @@ file_selection: File selection
 inactive_files_state: Hide inactive files
 save_untranslated_files: Save untranslated files
 create_subfolder: Create a subfolder in the saved folder
+
+log: Log

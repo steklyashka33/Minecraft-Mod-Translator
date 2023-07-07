@@ -126,15 +126,19 @@ class Page2(CTkFrame):
             return
         
         variable_switches = self.normal_switches.get_variable_switches()
-        mods = [text for text, variable in variable_switches if variable]
+        mods_for_translation = [text for text, variable in variable_switches if variable]
 
         session = self.get_session_data()
-        session.set(mods=mods)
+        session.set(mods_for_translation=mods_for_translation)
+
+        if self._command:
+            self._command(session)
     
     def get_session_data(self) -> SessionData:
         """returns session data."""
         if self.thread.is_alive():
-            self.thread.join()
+            # self.thread.join()
+            pass
         else:
             normal_switches_data = self.normal_switches.get_variable_switches()
             disabled_switches_data = self.disabled_switches.get_variable_switches()

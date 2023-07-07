@@ -47,12 +47,16 @@ class CreateSwitches:
             self._threads.append(thread)
 
     def _build_switch(self, index, text, value):
-            _text = text if len(text) <= self._max_length else text[:self._max_length] + "..."
-            _value = BooleanVar(value=value)
-            checkbox = FlippedCTkCheckBox(master=self._master, text=f"{_text}",  state=self._state, variable=_value)
-            checkbox.grid(row=(self._start + index), column=0, padx=10, pady=(0, 10), sticky="ew")
-            self._switches.append(checkbox)
-            self._variable_switches.append((text, _value,))
+            try:
+                _text = text if len(text) <= self._max_length else text[:self._max_length] + "..."
+                _value = BooleanVar(value=value)
+                checkbox = FlippedCTkCheckBox(master=self._master, text=f"{_text}",  state=self._state, variable=_value)
+                checkbox.grid(row=(self._start + index), column=0, padx=10, pady=(0, 10), sticky="ew")
+                self._switches.append(checkbox)
+                self._variable_switches.append((text, _value,))
+            except Exception as e:
+                # print(e)
+                pass
 
     def get_switches(self) -> list:
         """return switches."""
