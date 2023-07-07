@@ -13,9 +13,6 @@ def test():
     # Получаем путь к текущей директории
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    with open(os.path.join(current_dir, "supported_languages_Minecraft.json"), 'r', encoding="utf8") as f:
-        SUPPORT_LANGUAGES_MINECRAFT = loads(f.read())
-
     test_file = "test_file.jar"
     verification_file = "check.jar"
     path_test_file = os.path.join(current_dir, test_file)
@@ -30,7 +27,8 @@ def test():
         file = [verification_file]
 
         #Запуск программы.
-        ModTranslator(SUPPORT_LANGUAGES_MINECRAFT).translate("ru", current_dir, file, command=lambda _: print(f"clone {test_file} has been translated."))
+        translator = ModTranslator()
+        translator.translate("ru", current_dir, file, command=lambda _: print(f"clone {test_file} has been translated."))
 
         #Deleting verification files.
         if os.path.isfile(path_verification_file):
