@@ -1,9 +1,13 @@
 __author__ = 'Steklyashka'
 
-from typing import Optional, Tuple, Union, Callable
+from typing import Optional, Tuple, Union, Callable, Dict
+from googletrans.constants import DEFAULT_CLIENT_SERVICE_URLS, DEFAULT_RAISE_EXCEPTION, DEFAULT_USER_AGENT
 from googletrans.models import Translated
 from googletrans import Translator as google_Translator
 import sys
+
+import httpcore
+from httpx import Timeout
 
 sys.setrecursionlimit(100)
 
@@ -11,6 +15,37 @@ sys.setrecursionlimit(100)
 
 
 class Translator(google_Translator):
+	"""Google Translate ajax API implementation class
+
+    You have to create an instance of Translator to use this API
+
+    :param service_urls: google translate url list. URLs will be used randomly.
+                         For example ``['translate.google.com', 'translate.google.co.kr']``
+                         To preferably use the non webapp api, service url should be translate.googleapis.com
+    :type service_urls: a sequence of strings
+
+    :param user_agent: the User-Agent header to send when making requests.
+    :type user_agent: :class:`str`
+
+    :param proxies: proxies configuration.
+                    Dictionary mapping protocol or protocol and host to the URL of the proxy
+                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
+    :type proxies: dictionary
+
+    :param timeout: Definition of timeout for httpx library.
+                    Will be used for every request.
+    :type timeout: number or a double of numbers
+    :param raise_exception: if `True` then raise exception if smth will go wrong
+    :type raise_exception: boolean
+    """
+    
+	def __init__(self,
+	      		 service_urls: str = DEFAULT_CLIENT_SERVICE_URLS, user_agent: str = DEFAULT_USER_AGENT,
+		  		 raise_exception: str = DEFAULT_RAISE_EXCEPTION,
+          		 proxies: Dict[str, httpcore.SyncHTTPTransport] = None,
+          		 timeout: Timeout = None,
+          		 http2: bool = True):
+		super().__init__(service_urls, user_agent, raise_exception, proxies, timeout, http2)
 
 	def translate(self,
 	       text: Union[str, list[str]],

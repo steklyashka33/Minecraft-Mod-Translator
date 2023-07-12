@@ -6,9 +6,9 @@ from json import loads
 # import ModTranslator
 main_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(1, main_dir)
-from mod_translator import ModTranslator
+from mods_translator import ModsTranslator
 
-def test():
+def main():
 
     # Получаем путь к текущей директории
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,7 +27,7 @@ def test():
         file = [verification_file]
 
         #Запуск программы.
-        translator = ModTranslator()
+        translator = ModsTranslator()
         translator.translate("ru", current_dir, file, command=lambda _: print(f"clone {test_file} has been translated."))
 
         #Deleting verification files.
@@ -36,4 +36,4 @@ def test():
             print(f"clone {test_file} deleted.")
 
 if __name__ == '__main__':
-    test()
+    main()

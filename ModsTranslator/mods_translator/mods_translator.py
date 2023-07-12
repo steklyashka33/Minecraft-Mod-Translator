@@ -9,7 +9,7 @@ from .zip_file_manager import ZipFileManager
 from .path_to_languages import PathToLanguages
 from .check_mods_translation import CheckModsTranslation
 
-class ModTranslator:
+class ModsTranslator:
     def __init__(self,
                  supported_languages: Union[dict, None] = None,
                  exception_handler: Union[Callable[[Exception, str], None], None] = None):
@@ -31,7 +31,7 @@ class ModTranslator:
                  directory: str,
                  mod_files: list[str] = None,
                  directory_of_saves: Union[str, None] = None,
-                 command: Union[Callable[[str], None], None] = None):
+                 startwith: Union[str, None] = None):
         """
         target_language - язык на который нужно перевести,
         directory - директория с модами,
@@ -46,7 +46,7 @@ class ModTranslator:
         self._directory = directory
         self._mod_files = self._adding_extension_to_files(mod_files, ".jar")
         self._directory_of_saves = CheckModsTranslation._checking_the_path(directory_of_saves) if directory_of_saves else self._directory
-        self._command = command
+        self._startwith = startwith if startwith else ""
 
         for file_name in CheckModsTranslation(target_language_code,
                                               self._directory,
@@ -64,11 +64,12 @@ class ModTranslator:
                 
                 file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(file_path, from_file))
 
-                #Получение перевода.
                 texts = list(file_contents.values())
-                translation = Translator().translate( texts, target_language )
-
-                if texts is translation:
+                
+                try:
+                    #Получение перевода.
+                    translation = Translator().translate( texts, target_language )
+                except TypeError: # texts имеет элементы не типа str
                     print(f"unable to translate {file_name} due to broken structure.")
 
                 #Подстановка переводов к ключам.
@@ -76,9 +77,6 @@ class ModTranslator:
 
                 #Сохранение.
                 self._save(file_name, to_file, str(result))
-                
-                if self._command:
-                    self._command(file_name)
     
     @staticmethod
     def _adding_extension_to_files(file_names, desired_extension):
@@ -89,7 +87,7 @@ class ModTranslator:
     def _save(self, zip_file_name: str, file: str, string: str):
         """Saving changes."""
 
-        COMMENT = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/mod-translator-for-minecraft\n"
+        COMMENT = "//This translation was made by the ModTranslator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator\n"
         zip_file = os.path.join(self._directory_of_saves, zip_file_name)
 
         if not self._directory_of_saves is self._directory:

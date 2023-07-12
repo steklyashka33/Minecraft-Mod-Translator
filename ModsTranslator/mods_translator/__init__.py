@@ -1,3 +1,3 @@
 
-from .mod_translator import ModTranslator
+from .mods_translator import ModsTranslator
 from .check_mods_translation import CheckModsTranslation
