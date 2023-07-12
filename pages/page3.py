@@ -3,7 +3,7 @@ from pathlib import Path
 from customtkinter import *
 from threading import Thread
 from utils import *
-from ModTranslator import *
+from ModsTranslator import *
 from .create_switches import CreateSwitches
 from .session_data import SessionData
 
@@ -68,14 +68,14 @@ class Page3(CTkFrame):
         next_button.grid(row=3, column=0, sticky="")
     
     def _start_translating(self):
+        COMMENT = "//This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator\n"
         language: dict = self.supported_languages[self._session.to_language]
-        translator = ModTranslator()
+        translator = ModsTranslator(COMMENT)
         translator.translate(language["google_code"],
                              self._session.path_to_mods,
                              self._session.mods_for_translation,
                              self._session.path_to_save,
-                             command=lambda file: print(f"{file} has been translated."))
-        print("finish")
+                             self._session.startwith)
     
     def next_step(self):
         if self.thread.is_alive():

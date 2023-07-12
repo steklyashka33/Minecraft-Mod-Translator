@@ -61,8 +61,6 @@ class Translator(google_Translator):
 			self.kwargs = kwargs
 			
 			list_texts = self._check_string_limit(text)
-			if list_texts == -1: # Пойманая ошибка
-				return text
 			translated_texts = [self._text_translation(texts) for texts in list_texts]
 			
 			#Соединяем переведённые тексты
@@ -96,10 +94,7 @@ class Translator(google_Translator):
 		"""Проверяет на превышение лимита и возращает списки, которые не превышают лимит."""
 
 		texts_lenght = len(texts)
-		try:
-			connected_text = self._join_text(texts)
-		except TypeError: # texts имеет элементы не типа str
-			return -1
+		connected_text = self._join_text(texts)
 		connected_text_lenght = len(connected_text)
 		self.max_characters = 5000 # google translate limit of 5000 characters
 

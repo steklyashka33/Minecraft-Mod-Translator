@@ -3,7 +3,7 @@ from pathlib import Path
 from customtkinter import *
 from threading import Thread
 from utils import *
-from ModTranslator import *
+from ModsTranslator import *
 from .create_switches import CreateSwitches
 from .session_data import SessionData
 
