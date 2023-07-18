@@ -6,7 +6,7 @@ class CheckModsTranslation:
     def __init__(self, 
                  target_language_code: str,
                  directory: str,
-                 mod_files: list[str] = None,
+                 mod_files: Union[list[str], None] = None,
                  exception_handler: Union[Callable[[Exception, str], None], None] = None) -> None:
         
         if not target_language_code.endswith(".json"):
@@ -30,7 +30,7 @@ class CheckModsTranslation:
             if not os.path.isfile(file_path):
                 comment = f"no file found {file_name}"
                 if self._exception_handler:
-                    self._exception_handler(FileNotFoundError, comment)
+                    self._exception_handler(FileNotFoundError, comment) # type: ignore
                     continue
                 else:
                     raise FileNotFoundError(comment)

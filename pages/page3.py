@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Union, Callable
+from typing import Any, Optional, Tuple, Union, Callable
 from pathlib import Path
 from customtkinter import *
 from threading import Thread
@@ -9,7 +9,7 @@ from .session_data import SessionData
 
 class Page3(CTkFrame):
     def __init__(self,
-                 master: any,
+                 master: Any,
                  data: GetData,
                  session: SessionData,
                  width: int = 200,
@@ -23,7 +23,7 @@ class Page3(CTkFrame):
 
                  background_corner_colors: Union[Tuple[Union[str, Tuple[str, str]]], None] = None,
                  overwrite_preferred_drawing_method: Union[str, None] = None,
-                 command: Union[Callable[[dict], None], None] = None,
+                 command: Union[Callable[[SessionData], None], None] = None,
                  **kwargs):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
 
@@ -44,15 +44,15 @@ class Page3(CTkFrame):
 
         # 
         header_font = CTkFont("Arial", size=30, weight="bold")
-        main_label = CTkLabel(self, text=self.lang.file_management, font=header_font)
+        main_label = CTkLabel(self, text=self.lang.file_management, font=header_font) # type: ignore
         main_label.grid(row=0, column=0, sticky="")
 
         # создание подписи к 
         path_to_save_font = CTkFont("Arial", size=26)
-        path_to_save_label = CTkLabel(self, text=self.lang.log, font=path_to_save_font)
+        path_to_save_label = CTkLabel(self, text=self.lang.log, font=path_to_save_font) # type: ignore
         path_to_save_label.grid(row=1, column=0, sticky="s")
 
-        # create textbox
+        # create textbox 
         textbox = CTkTextbox(self, width=300)
         textbox.grid(row=2, column=0, sticky="ns")
         textbox.insert("0.0", "coming soon\n" * 1)
@@ -64,7 +64,7 @@ class Page3(CTkFrame):
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
+        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step) # type: ignore
         next_button.grid(row=3, column=0, sticky="")
     
     def _start_translating(self):
@@ -86,7 +86,7 @@ class Page3(CTkFrame):
         session.set()
 
         if self._command:
-            self._command(session)
+            self._command(session) # type: ignore
     
     def get_session_data(self) -> SessionData:
         """returns session data."""

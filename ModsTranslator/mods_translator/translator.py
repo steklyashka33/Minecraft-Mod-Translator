@@ -40,12 +40,12 @@ class Translator(google_Translator):
     """
     
 	def __init__(self,
-	      		 service_urls: str = DEFAULT_CLIENT_SERVICE_URLS, user_agent: str = DEFAULT_USER_AGENT,
-		  		 raise_exception: str = DEFAULT_RAISE_EXCEPTION,
-          		 proxies: Dict[str, httpcore.SyncHTTPTransport] = None,
-          		 timeout: Timeout = None,
+	      		 service_urls = DEFAULT_CLIENT_SERVICE_URLS, user_agent: str = DEFAULT_USER_AGENT,
+		  		 raise_exception = DEFAULT_RAISE_EXCEPTION,
+          		 proxies: Union[Dict[str, httpcore.SyncHTTPTransport], None] = None,
+          		 timeout: Union[Timeout, None] = None,
           		 http2: bool = True):
-		super().__init__(service_urls, user_agent, raise_exception, proxies, timeout, http2)
+		super().__init__(service_urls, user_agent, raise_exception, proxies, timeout, http2)  # type: ignore
 
 	def translate(self,
 	       text: Union[str, list[str]],

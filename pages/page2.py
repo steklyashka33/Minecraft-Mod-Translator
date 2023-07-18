@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Union, Callable
+from typing import Any, Optional, Tuple, Union, Callable
 from pathlib import Path
 from customtkinter import *
 from threading import Thread
@@ -9,7 +9,7 @@ from .session_data import SessionData
 
 class Page2(CTkFrame):
     def __init__(self,
-                 master: any,
+                 master: Any,
                  data: GetData,
                  session: SessionData,
                  width: int = 200,
@@ -23,13 +23,13 @@ class Page2(CTkFrame):
 
                  background_corner_colors: Union[Tuple[Union[str, Tuple[str, str]]], None] = None,
                  overwrite_preferred_drawing_method: Union[str, None] = None,
-                 command: Union[Callable[[dict], None], None] = None,
+                 command: Union[Callable[[SessionData], None], None] = None,
                  **kwargs):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
 
         self.grid_columnconfigure(0, weight=1, uniform="fred")
         self.grid_rowconfigure(0, weight=4, uniform="fred")
-        self.grid_rowconfigure((1, 3, 4), weight=3, uniform="fred")
+        self.grid_rowconfigure((1, 3, 4), weight=3, uniform="fred") # type: ignore
         self.grid_rowconfigure(2, weight=16, uniform="fred")
         self.grid_rowconfigure(5, weight=5, uniform="fred")
 
@@ -45,17 +45,17 @@ class Page2(CTkFrame):
 
         # 
         header_font = CTkFont("Arial", size=30, weight="bold")
-        main_label = CTkLabel(self, text=self.lang.file_management, font=header_font)
+        main_label = CTkLabel(self, text=self.lang.file_management, font=header_font) # type: ignore
         main_label.grid(row=0, column=0, sticky="s")
 
         # 
         self.inactive_files_state = BooleanVar(value=self._session.inactive_files_state)
         inactive_files_state_font = CTkFont("Arial", size=16, weight="bold")
-        inactive_files_state_checkbox = CTkSwitch(self, text=self.lang.inactive_files_state, font=inactive_files_state_font, command=self._inactive_files_event, variable=self.inactive_files_state)
+        inactive_files_state_checkbox = CTkSwitch(self, text=self.lang.inactive_files_state, font=inactive_files_state_font, command=self._inactive_files_event, variable=self.inactive_files_state) # type: ignore
         inactive_files_state_checkbox.grid(row=1, column=0)
 
         # create scrollable frame
-        scrollable_frame = CTkScrollableFrame(self, label_text=self.lang.file_selection)
+        scrollable_frame = CTkScrollableFrame(self, label_text=self.lang.file_selection) # type: ignore
         scrollable_frame.grid(row=2, column=0, sticky="ns")
         scrollable_frame.grid_columnconfigure(0, weight=1)
         scrollable_frame._parent_frame.configure(width=scrollable_frame_width)
@@ -68,18 +68,18 @@ class Page2(CTkFrame):
         # 
         self.save_untranslated_files = BooleanVar(value=self._session.save_untranslated_files)
         save_untranslated_files_font = CTkFont("Arial", size=14)
-        save_untranslated_files_checkbox = CTkSwitch(self, text=self.lang.save_untranslated_files, font=save_untranslated_files_font, variable=self.save_untranslated_files)
+        save_untranslated_files_checkbox = CTkSwitch(self, text=self.lang.save_untranslated_files, font=save_untranslated_files_font, variable=self.save_untranslated_files) # type: ignore
         save_untranslated_files_checkbox.grid(row=3, column=0)
         
         # 
         self.create_subfolder = BooleanVar(value=self._session.create_subfolder)
         create_subfolder_font = CTkFont("Arial", size=14)
-        create_subfolder_checkbox = CTkSwitch(self, text=self.lang.create_subfolder, font=create_subfolder_font, variable=self.create_subfolder)
+        create_subfolder_checkbox = CTkSwitch(self, text=self.lang.create_subfolder, font=create_subfolder_font, variable=self.create_subfolder) # type: ignore
         create_subfolder_checkbox.grid(row=4, column=0)
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step)
+        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step) # type: ignore
         next_button.grid(row=5, column=0, sticky="")
 
     def _inactive_files_event(self) -> None:
@@ -98,7 +98,7 @@ class Page2(CTkFrame):
             #get mods
             mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
                                                 self._session.path_to_mods,
-                                                exception_handler=self._exception_handler)
+                                                exception_handler=self._exception_handler_ignore)
             untranslated_mods = mods_translation.get_untranslated_mods()
             untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
             other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
@@ -156,5 +156,5 @@ class Page2(CTkFrame):
 
         return self._session
     
-    def _exception_handler(self, file_name):
-        print(f"error {file_name}")
+    def _exception_handler_ignore(self, exception: Exception, comment: str):
+        pass

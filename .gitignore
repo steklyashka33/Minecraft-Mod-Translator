@@ -3,3 +3,4 @@ __pycache__
 user_config.yaml
 /test.py
 /examples
+*.log
