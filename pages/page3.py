@@ -1,10 +1,8 @@
 from typing import Any, Optional, Tuple, Union, Callable
-from pathlib import Path
 from customtkinter import *
 from threading import Thread
 from utils import *
 from ModsTranslator import *
-from .create_switches import CreateSwitches
 from .session_data import SessionData
 
 class Page3(CTkFrame):
@@ -68,7 +66,7 @@ class Page3(CTkFrame):
         next_button.grid(row=3, column=0, sticky="")
     
     def _start_translating(self):
-        COMMENT = "//This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator\n"
+        COMMENT = "This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator"
         language: dict = self.supported_languages[self._session.to_language]
         translator = ModsTranslator(COMMENT)
         translator.translate(language["google_code"],
