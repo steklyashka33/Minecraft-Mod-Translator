@@ -11,13 +11,13 @@ from .check_mods_translation import CheckModsTranslation
 
 class ModsTranslator:
     def __init__(self,
-                 comment: str = "The translation is done automatically.\n",
+                 comment: str = "The translation is done automatically.",
                  supported_languages: Union[dict, None] = None,):
-        self.COMMENT = comment
+        self.COMMENT = f"//{comment}\n"
         SUPPORT_LANGUAGES = self._load_supported_languages()
         self._supported_languages = supported_languages if supported_languages else SUPPORT_LANGUAGES
         
-        self.FORMATTER = logging.Formatter('[%(levelname)s] %(asctime)s :: %(message)s', datefmt='%H:%M:%S')
+        self.FORMATTER = logging.Formatter('%(levelname)s %(asctime)s :: %(message)s', datefmt='%H:%M:%S')
         self._logger = self._create_logger(self.FORMATTER)
     
     def _load_supported_languages(self):
@@ -62,19 +62,18 @@ class ModsTranslator:
 
             #Получаем путь и переводы из мода.
             for path in PathToLanguages(file_path).getFolders():
-
+                #set the paths to the working files
                 from_file = os.path.join(path, FROM_LANGUAGE).replace("\\", "/")
                 to_file = os.path.join(path, target_language_code).replace("\\", "/")
                 
                 file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(file_path, from_file))
-
                 texts = list(file_contents.values())
                 
                 try:
                     #Получение перевода.
                     translation = Translator().translate( texts, target_language )
                 except TypeError: # texts имеет элементы не типа str
-                    print(f"unable to translate {mod_name} due to broken structure.")
+                    self._logger.warning(f"unable to translate {mod_name} due to broken structure.")
                     continue
 
                 #Подстановка переводов к ключам.
@@ -87,7 +86,7 @@ class ModsTranslator:
         return self._logger
     
     def _exception_handler(self, exception: Exception, comment: str):
-        self.logger = 1
+        self._logger.warning(f"{exception}: {comment}")
     
     @staticmethod
     def _adding_extension_to_files(file_names: List[str], desired_extension):
@@ -114,7 +113,6 @@ class ModsTranslator:
 
         # Добавление обработчика в логгер
         logger.addHandler(file_handler)
-        logger.info("Этот лог будет записан снаружи класса ModTranslator")
 
         return logger
     
@@ -129,3 +127,4 @@ class ModsTranslator:
             copyfile(from_file_path, to_file_path)
 
         ZipFileManager.adding_a_file( zip_file, file_name, self.COMMENT + string )
+        self._logger.info(f"mod {zip_mod_name} has been saved")
