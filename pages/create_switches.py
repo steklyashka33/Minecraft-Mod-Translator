@@ -39,7 +39,7 @@ class CreateSwitches:
         for thread in self._threads:
             thread.join()
         
-        print("the work is completed in", time()-self.start)
+        # print("the work is completed in", time()-self.start)
     
     def _create_thread(self, index, text, value):
             thread = Thread(target=self._build_switch, args=(index, text, value))
