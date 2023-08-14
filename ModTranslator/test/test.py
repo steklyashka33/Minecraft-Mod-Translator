@@ -1,6 +1,5 @@
 import os, sys, logging
 from shutil import copyfile
-from json import loads
 
 # import ModTranslator
 main_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +22,7 @@ def main():
         #Копировать и переименовать тестовый файл. 
         copyfile(path_test_file, path_verification_file)
 
-        file = [verification_file, "lol.jar"]
+        file = [verification_file]
 
         translator = ModsTranslator()
         # add handler
@@ -31,14 +30,13 @@ def main():
         handler.setFormatter(translator.FORMATTER)
         logger = translator.get_logger()
         logger.addHandler(handler)
-        #Запуск программы.
+        # start of text translation
         translator.translate("ru", current_dir, file)
-
-
+        
         #Deleting verification files.
         if os.path.isfile(path_verification_file):
             os.remove(path_verification_file)
-            logger.info(f"clone {test_file} deleted.")
+            logger.info(f"clone {verification_file} deleted.")
 
 if __name__ == '__main__':
     main()

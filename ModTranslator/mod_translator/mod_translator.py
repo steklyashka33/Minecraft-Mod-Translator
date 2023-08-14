@@ -17,7 +17,7 @@ class ModsTranslator:
         SUPPORT_LANGUAGES = self._load_supported_languages()
         self._supported_languages = supported_languages if supported_languages else SUPPORT_LANGUAGES
         
-        self.FORMATTER = logging.Formatter('%(levelname)s %(asctime)s :: %(message)s', datefmt='%H:%M:%S')
+        self.FORMATTER = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%H:%M:%S')
         self._logger = self._create_logger(self.FORMATTER)
     
     def _load_supported_languages(self):
@@ -47,7 +47,7 @@ class ModsTranslator:
             target_language_code += ".json"
         self._directory = directory
         self._mod_files = self._adding_extension_to_files(mod_files, ".jar") if mod_files else None
-        self._directory_of_saves = CheckModsTranslation._checking_the_path(directory_of_saves) if directory_of_saves else self._directory
+        self._directory_of_saves = CheckModsTranslation._check_the_path(directory_of_saves) if directory_of_saves else self._directory
         self._startwith = startwith
         
         check_mods = CheckModsTranslation(target_language_code,
@@ -62,7 +62,7 @@ class ModsTranslator:
 
             #Получаем путь и переводы из мода.
             for path in PathToLanguages(file_path).getFolders():
-                #set the paths to the working files
+                # set the paths to the working files
                 from_file = os.path.join(path, FROM_LANGUAGE).replace("\\", "/")
                 to_file = os.path.join(path, target_language_code).replace("\\", "/")
                 
@@ -70,23 +70,23 @@ class ModsTranslator:
                 texts = list(file_contents.values())
                 
                 try:
-                    #Получение перевода.
+                    # get translation
                     translation = Translator().translate( texts, target_language )
-                except TypeError: # texts имеет элементы не типа str
+                except TypeError: # texts has elements not of type str
                     self._logger.warning(f"unable to translate {mod_name} due to broken structure.")
                     continue
 
-                #Подстановка переводов к ключам.
+                # Подстановка переводов к ключам.
                 result = dict( zip( file_contents.keys(), translation ) )
 
-                #Сохранение.
+                # save
                 self._save(mod_name, to_file, str(result))
     
     def get_logger(self):
         return self._logger
     
-    def _exception_handler(self, exception: Exception, comment: str):
-        self._logger.warning(f"{exception}: {comment}")
+    def _exception_handler(self, comment: str):
+        self._logger.warning(f"{comment}")
     
     @staticmethod
     def _adding_extension_to_files(file_names: List[str], desired_extension):

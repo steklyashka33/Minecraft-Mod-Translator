@@ -7,7 +7,7 @@ class CheckModsTranslation:
                  target_language_code: str,
                  directory: str,
                  mod_files: Union[list[str], None] = None,
-                 exception_handler: Union[Callable[[Exception, str], None], None] = None) -> None:
+                 exception_handler: Union[Callable[[str], None], None] = None) -> None:
         
         if not target_language_code.endswith(".json"):
             target_language_code += ".json"
@@ -16,8 +16,7 @@ class CheckModsTranslation:
         self._untranslated_mods: list = []
         self._mods_with_no_languages: list = []
         
-        FROM_LANGUAGE = "en_us.json"
-        self._directory = self._checking_the_path(directory)
+        self._directory = self._check_the_path(directory)
         self._mod_files = mod_files if mod_files else os.listdir(self._directory)
         self._mod_files = self._filter_files_by_extension(self._mod_files, ".jar")
         self._exception_handler = exception_handler
@@ -26,11 +25,11 @@ class CheckModsTranslation:
 
             #Получение абсолютного пути мода.
             file_path = os.path.join(self._directory, file_name)
-
+            
             if not os.path.isfile(file_path):
-                comment = f"no file found {file_name}"
+                comment = f"no file found {file_name}."
                 if self._exception_handler:
-                    self._exception_handler(FileNotFoundError, comment) # type: ignore
+                    self._exception_handler(comment)
                     continue
                 else:
                     raise FileNotFoundError(comment)
@@ -66,8 +65,8 @@ class CheckModsTranslation:
         return filtered_files
     
     @staticmethod
-    def _checking_the_path(folder: str) -> str:
-        """checking the folder path for errors."""
+    def _check_the_path(folder: str) -> str:
+        """check the folder path for errors."""
 
         if isinstance(folder, str):
             if not os.path.isdir(folder):
