@@ -2,7 +2,7 @@ from typing import Any, Optional, Tuple, Union, Callable
 from customtkinter import *
 from threading import Thread
 from utils import *
-from ModsTranslator import *
+from ModTranslator import *
 from .session_data import SessionData
 
 class Page3(CTkFrame):
@@ -26,7 +26,7 @@ class Page3(CTkFrame):
         super().__init__(master, width, height, corner_radius, border_width, bg_color, fg_color, border_color, background_corner_colors, overwrite_preferred_drawing_method, **kwargs)
 
         self.grid_columnconfigure(0, weight=1, uniform="fred")
-        self.grid_rowconfigure(0, weight=5, uniform="fred")
+        self.grid_rowconfigure(0, weight=3, uniform="fred")
         self.grid_rowconfigure(1, weight=3, uniform="fred")
         self.grid_rowconfigure(2, weight=18, uniform="fred")
         self.grid_rowconfigure(3, weight=6, uniform="fred")
@@ -51,25 +51,29 @@ class Page3(CTkFrame):
         path_to_save_label.grid(row=1, column=0, sticky="s")
 
         # create textbox 
-        textbox = CTkTextbox(self, width=300)
+        textbox = CTkTextbox(self, width=350)
         textbox.grid(row=2, column=0, sticky="ns")
-        textbox.insert("0.0", "coming soon\n" * 1)
         textbox.configure(state=DISABLED)
 
         #
+        from .texthandler import TextHandler
+        COMMENT = "This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator"
+        self.translator = ModsTranslator(COMMENT)
+        handler = TextHandler(textbox)
+        handler.setFormatter(self.translator.FORMATTER)
+        self.logger = self.translator.get_logger()
+        self.logger.addHandler(handler)
         self.thread = Thread(target=self._start_translating, args=())
         self.thread.start()
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        next_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.next, command=self.next_step) # type: ignore
-        next_button.grid(row=3, column=0, sticky="")
+        close_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.close, command=self.next_step) # type: ignore
+        close_button.grid(row=3, column=0, sticky="")
     
     def _start_translating(self):
-        COMMENT = "This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator"
         language: dict = self.supported_languages[self._session.to_language]
-        translator = ModsTranslator(COMMENT)
-        translator.translate(language["google_code"],
+        self.translator.translate(language["google_code"],
                              self._session.path_to_mods,
                              self._session.mods_for_translation,
                              self._session.path_to_save,
