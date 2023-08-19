@@ -4,7 +4,7 @@ from shutil import copyfile
 # import ModTranslator
 main_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(1, main_dir)
-from mods_translator import ModsTranslator
+from mod_translator import ModTranslator
 
 def main():
 
@@ -24,7 +24,7 @@ def main():
 
         file = [verification_file]
 
-        translator = ModsTranslator()
+        translator = ModTranslator()
         # add handler
         handler = logging.StreamHandler()
         handler.setFormatter(translator.FORMATTER)

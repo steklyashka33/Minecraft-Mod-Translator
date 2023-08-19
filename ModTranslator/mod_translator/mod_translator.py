@@ -9,10 +9,10 @@ from .zip_file_manager import ZipFileManager
 from .path_to_languages import PathToLanguages
 from .check_mods_translation import CheckModsTranslation
 
-class ModsTranslator:
+class ModTranslator:
     def __init__(self,
                  comment: str = "The translation is done automatically.",
-                 supported_languages: Union[dict, None] = None,):
+                 supported_languages: Union[dict, None] = None):
         self.COMMENT = f"//{comment}\n"
         SUPPORT_LANGUAGES = self._load_supported_languages()
         self._supported_languages = supported_languages if supported_languages else SUPPORT_LANGUAGES
