@@ -10,7 +10,7 @@ class CreateSwitches:
                  start: int = 0,
                  state: str = NORMAL,
                  values: Union[bool, list[bool]] = True,
-                 max_length: int = 30):
+                 max_length: Union[int, None] = None):
                  
         from time import time
         self.start = time()
@@ -48,7 +48,10 @@ class CreateSwitches:
 
     def _build_switch(self, index, text, value):
             try:
-                _text = text if len(text) <= self._max_length else text[:self._max_length] + "..."
+                if self._max_length:
+                    _text = text if len(text) <= self._max_length else text[:self._max_length] + "..."
+                else:
+                    _text = text
                 _value = BooleanVar(value=value)
                 checkbox = FlippedCTkCheckBox(master=self._master, text=f"{_text}",  state=self._state, variable=_value)
                 checkbox.grid(row=(self._start + index), column=0, padx=10, pady=(0, 10), sticky="ew")
