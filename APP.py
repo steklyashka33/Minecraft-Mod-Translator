@@ -14,7 +14,7 @@ class App(CTk):
         self.main_folder = os.path.dirname(os.path.abspath(__file__))
         self.data = GetData(self.main_folder)
         
-        self.config, self.user_config, _, i = self.data.get()
+        self.config, self.user_config, _, _ = self.data.get()
 
         # get supported_languages
         # print(dict( [[a["google_code"], a["mc_code"]] for a in i.values()] ))

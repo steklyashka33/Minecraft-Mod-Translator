@@ -1,7 +1,6 @@
 from typing import Optional, Tuple, Union, Callable
 from customtkinter import *
 from utils import *
-from CTkMessagebox import CTkMessagebox
 
 class Sidebar(CTkFrame):
     def __init__(self,

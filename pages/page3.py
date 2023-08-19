@@ -97,7 +97,7 @@ class Page3(CTkFrame):
             self.logger.info(f"file {mod} copied to the save folder")
         
         #finish
-        self.logger.info("Finished!")
+        self.logger.info("Complete.")
     
     def next_step(self):
         if self.thread.is_alive():
