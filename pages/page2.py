@@ -62,6 +62,8 @@ class Page2(CTkFrame):
         scrollable_frame._parent_frame.grid_propagate(False)
         #build switches
         self.disabled_switches = None
+        self._untranslated_names_of_mods = None
+        self._create_switches = True
         self.thread = Thread(target=self._build_switches_for_scrollable_frame, args=(scrollable_frame,))
         self.thread.start()
 
@@ -94,52 +96,62 @@ class Page2(CTkFrame):
     def _build_switches_for_scrollable_frame(self, master):
         """create switches for scrollable frame."""
 
-        if self._session.normal_switches is None and self._session.disabled_switches is None:
-            #get mods
-            mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
-                                                self._session.path_to_mods,
-                                                exception_handler=self._exception_handler_ignore)
-            untranslated_mods = mods_translation.get_untranslated_mods()
-            untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
-            other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
-            other_names_of_mods = [Path(mod).stem for mod in other_mods]
-            #get values
-            normal_switches_values = True
-        else:
-            #get mods
-            untranslated_names_of_mods = [name for name, value in self._session.normal_switches]
-            other_names_of_mods = [name for name, value in self._session.disabled_switches]
-            #get values
-            normal_switches_values = [value for name, value in self._session.normal_switches]
+        try:
+            loading_label = CTkLabel(master, text=self.lang.loading, font=("Arial", 20)) # type: ignore
+            loading_label.grid(row=0, column=0, sticky="ew")
+            
+            if self._session.normal_switches is None and self._session.disabled_switches is None:
+                #get mods
+                mods_translation = CheckModsTranslation(self.supported_languages[self._session.to_language]["mc_code"],
+                                                    self._session.path_to_mods,
+                                                    exception_handler=self._exception_handler_ignore)
+                untranslated_mods = mods_translation.get_untranslated_mods()
+                self._untranslated_names_of_mods = [Path(mod).stem for mod in untranslated_mods]
+                other_mods = mods_translation.get_translated_mods() + mods_translation.get_mods_with_no_languages()
+                self._other_names_of_mods = [Path(mod).stem for mod in other_mods]
+                #get values
+                normal_switches_values = True
+            else:
+                #get mods
+                self._untranslated_names_of_mods = [name for name, value in self._session.normal_switches]
+                self._other_names_of_mods = [name for name, value in self._session.disabled_switches]
+                #get values
+                normal_switches_values = [value for name, value in self._session.normal_switches]
 
-        #create switches
-        max_length = 30
-        self.normal_switches = CreateSwitches(master, untranslated_names_of_mods, start=0, values=normal_switches_values, max_length=max_length)
-        self.disabled_switches = CreateSwitches(master, other_names_of_mods, start=len(self.normal_switches.get_switches()), state=DISABLED, values=False, max_length=max_length)
-        
-        #hide disabled switches
-        self._inactive_files_event()
+            if self._create_switches:
+                #create switches
+                max_string_length = 30
+                self.normal_switches = CreateSwitches(master, self._untranslated_names_of_mods, start=0, values=normal_switches_values, max_length=max_string_length)
+                loading_label.destroy()
+                self.disabled_switches = CreateSwitches(master, self._other_names_of_mods, start=len(self.normal_switches.get_switches()), state=DISABLED, values=False, max_length=max_string_length)
+                
+                #hide disabled switches
+                self._inactive_files_event()
+        except:
+            pass
     
     def next_step(self):
-        if self.thread.is_alive():
-            print("wait")
+        if self._untranslated_names_of_mods is None:
             return
-        
-        variable_switches = self.normal_switches.get_variable_switches()
-        mods_for_translation = [text for text, variable in variable_switches if variable]
+        elif self.thread.is_alive():
+            self._create_switches = False
+            session = self.get_session_data()
+            session.set(mods_for_translation=self._untranslated_names_of_mods, 
+                        other_mods=self._other_names_of_mods)
+        else:
+            variable_switches = self.normal_switches.get_variable_switches()
+            mods_for_translation = [text for text, variable in variable_switches if variable]
 
-        session = self.get_session_data()
-        session.set(mods_for_translation=mods_for_translation)
+            session = self.get_session_data()
+            session.set(mods_for_translation=mods_for_translation, 
+                        other_mods=self._other_names_of_mods)
 
         if self._command:
             self._command(session)
     
     def get_session_data(self) -> SessionData:
         """returns session data."""
-        if self.thread.is_alive():
-            # self.thread.join()
-            pass
-        else:
+        if not self.thread.is_alive():
             normal_switches_data = self.normal_switches.get_variable_switches()
             disabled_switches_data = self.disabled_switches.get_variable_switches()
             self._session.set(normal_switches=normal_switches_data,

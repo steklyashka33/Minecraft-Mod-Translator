@@ -1,4 +1,6 @@
 from typing import Any, Optional, Tuple, Union, Callable
+from datetime import datetime
+from shutil import copyfile
 from customtkinter import *
 from threading import Thread
 from utils import *
@@ -58,7 +60,7 @@ class Page3(CTkFrame):
         #
         from .texthandler import TextHandler
         COMMENT = "This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator"
-        self.translator = ModsTranslator(COMMENT)
+        self.translator = ModTranslator(COMMENT)
         handler = TextHandler(textbox)
         handler.setFormatter(self.translator.FORMATTER)
         self.logger = self.translator.get_logger()
@@ -72,12 +74,30 @@ class Page3(CTkFrame):
         close_button.grid(row=3, column=0, sticky="")
     
     def _start_translating(self):
+        if self._session.create_subfolder:
+            now = datetime.now()
+            path_to_save_folder = os.path.join(self._session.path_to_save, now.strftime("%d-%m %H;%M")).replace("\\", "/") + "/"
+            os.mkdir(path_to_save_folder)
+        else:
+            path_to_save_folder = self._session.path_to_save
         language: dict = self.supported_languages[self._session.to_language]
+            
         self.translator.translate(language["google_code"],
                              self._session.path_to_mods,
                              self._session.mods_for_translation,
-                             self._session.path_to_save,
+                             path_to_save_folder,
                              self._session.startwith)
+
+        for mod in self._session.other_mods:
+            path_to_mods = self._session.path_to_mods
+            
+            path_to_mod = os.path.join(path_to_mods, mod).replace("\\", "/") + ".jar"
+            path_to_save = os.path.join(path_to_save_folder, mod).replace("\\", "/") + ".jar"
+            copyfile(path_to_mod, path_to_save)
+            self.logger.info(f"file {mod} copied to the save folder")
+        
+        #finish
+        self.logger.info("Finished!")
     
     def next_step(self):
         if self.thread.is_alive():

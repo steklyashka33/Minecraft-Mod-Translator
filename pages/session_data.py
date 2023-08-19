@@ -16,6 +16,7 @@ class SessionData:
     normal_switches: Union[List[Tuple[str, bool]], None] = None
     disabled_switches: Union[List[Tuple[str, bool]], None] = None
     mods_for_translation: Union[list, None] = None
+    other_mods: Union[list, None] = None
 
     def set(self, **kwargs):
         for key, value in kwargs.items():

@@ -7,6 +7,7 @@ list_of_appearance_modes:
 - Светлая
 - Тёмная
 
+# Page 1
 data_entry: Ввод данных
 path_to_mods: "Путь к папке с модами:"
 translation_language: "Язык перевода:"
@@ -16,11 +17,14 @@ last_path_to_save: "Путь к папке с сохранениями:"
 error: Неверный ввод или не все поля были заполнены
 next: Продолжить
 
+# Page 2
 file_management: Управление файлами
+loading: загрузка...
 file_selection: Выбор файлов
 inactive_files_state: Скрыть неактивные файлы
 save_untranslated_files: Сохранять не переведённые файлы
 create_subfolder: Создать подпапку в папке с сохранениями
 
+# Page 3
 log: Журнал
 close: Закрыть

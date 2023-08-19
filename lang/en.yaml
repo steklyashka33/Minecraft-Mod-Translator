@@ -7,6 +7,7 @@ list_of_appearance_modes:
 - Light
 - Dark
 
+# Page 1
 data_entry: Data entry
 path_to_mods: "The path to the mods folder:"
 translation_language: "Translation language:"
@@ -16,11 +17,14 @@ last_path_to_save: "The path to the saved folder:"
 error: Incorrect input or not all fields were filled in
 next: Next
 
+# Page 2
 file_management: File Management
+loading: loading...
 file_selection: File selection
 inactive_files_state: Hide inactive files
 save_untranslated_files: Save untranslated files
 create_subfolder: Create a subfolder in the saved folder
 
+# Page 3
 log: Log
 close: Close

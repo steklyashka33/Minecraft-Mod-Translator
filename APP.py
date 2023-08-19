@@ -74,7 +74,7 @@ class App(CTk):
             self.current_page = next(self.pages)
             self.build_main(session)
         except StopIteration:
-            pass
+            self.destroy()
     
     def update_language(self, language: str):
         if self.user_config.interface_language == language: # type: ignore
