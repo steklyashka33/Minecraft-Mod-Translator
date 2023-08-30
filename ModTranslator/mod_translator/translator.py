@@ -99,7 +99,7 @@ class Translator(google_Translator):
 		self.max_characters = 5000 # google translate limit of 5000 characters
 
 		if connected_text_lenght < self.max_characters:
-			return [connected_text]
+			return [texts]
 		else:
 			text1 = self._check_string_limit( texts[ :texts_lenght//2 ] )
 			text2 = self._check_string_limit( texts[ texts_lenght//2: ] )
