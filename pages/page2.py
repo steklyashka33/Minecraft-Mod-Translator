@@ -4,8 +4,6 @@ from customtkinter import *
 from threading import Thread
 from utils import *
 from ModTranslator import *
-from .create_switches import CreateSwitches
-from .session_data import SessionData
 
 class Page2(CTkFrame):
     def __init__(self,

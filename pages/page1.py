@@ -2,8 +2,6 @@ from typing import Any, Optional, Tuple, Union, Callable
 from threading import Timer
 from customtkinter import *
 from utils import *
-from .folder_dialog_combobox import FolderDialogComboBox
-from .session_data import SessionData
 
 class Page1(CTkFrame):
     def __init__(self,

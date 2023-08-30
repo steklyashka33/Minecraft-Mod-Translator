@@ -5,7 +5,6 @@ from customtkinter import *
 from threading import Thread
 from utils import *
 from ModTranslator import *
-from .session_data import SessionData
 
 class Page3(CTkFrame):
     def __init__(self,
@@ -58,7 +57,6 @@ class Page3(CTkFrame):
         textbox.configure(state=DISABLED)
 
         #
-        from .texthandler import TextHandler
         COMMENT = "This translation was made by the Minecraft-Mods-Translator program.\n//repository — https://github.com/steklyashka33/Minecraft-Mods-Translator"
         self.translator = ModTranslator(COMMENT)
         handler = TextHandler(textbox)
