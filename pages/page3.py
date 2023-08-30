@@ -74,7 +74,7 @@ class Page3(CTkFrame):
     def _start_translating(self):
         if self._session.create_subfolder:
             now = datetime.now()
-            path_to_save_folder = os.path.join(self._session.path_to_save, now.strftime("%d-%m %H;%M")).replace("\\", "/") + "/"
+            path_to_save_folder = os.path.join(self._session.path_to_save, now.strftime("%d-%m %H;%M;%S")).replace("\\", "/") + "/"
             os.mkdir(path_to_save_folder)
         else:
             path_to_save_folder = self._session.path_to_save
@@ -86,13 +86,8 @@ class Page3(CTkFrame):
                              path_to_save_folder,
                              self._session.startwith)
 
-        for mod in self._session.other_mods:
-            path_to_mods = self._session.path_to_mods
-            
-            path_to_mod = os.path.join(path_to_mods, mod).replace("\\", "/") + ".jar"
-            path_to_save = os.path.join(path_to_save_folder, mod).replace("\\", "/") + ".jar"
-            copyfile(path_to_mod, path_to_save)
-            self.logger.info(f"file {mod} copied to the save folder")
+        if self._session.save_untranslated_files:
+            self._save_untranslated_files(path_to_save_folder)
         
         #finish
         self.logger.info("Complete.")
@@ -117,4 +112,13 @@ class Page3(CTkFrame):
         return self._session
     
     def _exception_handler(self, file_name):
-        print(f"error {file_name}")
+        self.logger.error(f"{file_name}")
+    
+    def _save_untranslated_files(self, path_to_save_folder):
+        for mod in self._session.other_mods:
+            path_to_mods = self._session.path_to_mods
+            
+            path_to_mod = os.path.join(path_to_mods, mod).replace("\\", "/") + ".jar"
+            path_to_save = os.path.join(path_to_save_folder, mod).replace("\\", "/") + ".jar"
+            copyfile(path_to_mod, path_to_save)
+            self.logger.info(f"file {mod} copied to the save folder")
