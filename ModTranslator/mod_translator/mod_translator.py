@@ -57,30 +57,35 @@ class ModTranslator:
         untranslated_mods = check_mods.get_untranslated_mods()
 
         for mod_name in untranslated_mods:
-            #Получение абсолютного пути мода.
-            file_path = os.path.join(self._directory, mod_name)
+            # Получение абсолютного пути мода.
+            zip_file_path = os.path.join(self._directory, mod_name)
+            # Получение всех путей к переводам. 
+            folders = PathToLanguages(zip_file_path).getFolders()
 
-            #Получаем путь и переводы из мода.
-            for path in PathToLanguages(file_path).getFolders():
+            # Проходит по каждой папке с переводами из мода.
+            for index, path in enumerate(folders):
                 # set the paths to the working files
                 from_file = os.path.join(path, FROM_LANGUAGE).replace("\\", "/")
                 to_file = os.path.join(path, target_language_code).replace("\\", "/")
                 
-                file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(file_path, from_file))
+                # Чтение файла и получение всех текстов для перевода.
+                file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(zip_file_path, from_file))
                 texts = list(file_contents.values())
                 
                 try:
                     # get translation
-                    translation = Translator().translate( texts, target_language )
+                    translation = Translator().translate(texts, target_language)
                 except TypeError: # texts has elements not of type str
                     self._logger.warning(f"unable to translate {mod_name} due to broken structure.")
                     continue
 
                 # Подстановка переводов к ключам.
-                result = dict( zip( file_contents.keys(), translation ) )
+                result = dict(zip( file_contents.keys(), translation ))
 
+                # Указывать какая часть переведена если частей 2 и более.
+                part = index+1 if len(folders)>=2 else None
                 # save
-                self._save(mod_name, to_file, str(result))
+                self._save(mod_name, to_file, str(result), part)
     
     def get_logger(self):
         return self._logger
@@ -116,15 +121,15 @@ class ModTranslator:
 
         return logger
     
-    def _save(self, zip_mod_name: str, file_name: str, string: str):
+    def _save(self, zip_mod_name: str, file_name: str, string: str, part: Union[int, None] = None):
         """Saving changes."""
 
         zip_file = os.path.join(self._directory_of_saves, zip_mod_name)
 
         if not self._directory_of_saves is self._directory:
-            from_file_path = os.path.join(self._directory, zip_mod_name)
-            to_file_path = os.path.join(self._directory_of_saves, zip_mod_name)
-            copyfile(from_file_path, to_file_path)
+            from_zip_file_path = os.path.join(self._directory, zip_mod_name)
+            to_zip_file_path = os.path.join(self._directory_of_saves, zip_mod_name)
+            copyfile(from_zip_file_path, to_zip_file_path)
 
         ZipFileManager.adding_a_file( zip_file, file_name, self.COMMENT + string )
-        self._logger.info(f"mod {zip_mod_name} has been saved")
+        self._logger.info(f"mod {zip_mod_name}{f' part-{part}' if part else ''} has been saved")
