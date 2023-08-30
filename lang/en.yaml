@@ -1,5 +1,10 @@
 language_name: English
 
+# welcome
+welcome: Welcome
+okey: Ok
+
+# sidebar
 interface_language: "Interface Language:"
 appearance_mode: "Appearance Mode:"
 list_of_appearance_modes:

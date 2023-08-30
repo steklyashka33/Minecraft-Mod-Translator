@@ -50,6 +50,8 @@ class App(CTk):
 
         self.build_sidebar()
         self.build_main()
+        if self.data.is_first_launch_of_app():
+            WelcomeWindow(self, self.data)
 
     def build_sidebar(self):
         """creates a sidebar."""

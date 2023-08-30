@@ -1,5 +1,10 @@
 language_name: Русский
 
+# welcome
+welcome: Добро пожаловать
+okey: Хорошо
+
+# sidebar
 interface_language: "Язык интерфейса:"
 appearance_mode: "Режим внешнего вида:"
 list_of_appearance_modes:

@@ -1,3 +1,4 @@
+from typing import Union
 from .yaml_file_manager import YAMLFileManager
 from os.path import isfile, join
 import os
@@ -20,7 +21,8 @@ class UserConfigManager():
 
         #checking for correct input
         self._checking_the_path(main_folder)
-        self.main_folder = main_folder
+        self._main_folder = main_folder
+        self._is_first_launch_of_app = None
     
     @staticmethod
     def _checking_the_path(folder) -> None:
@@ -32,32 +34,40 @@ class UserConfigManager():
         else:
             raise TypeError("Directory must be a string.")
     
+    def get_main_folder(self) -> str:
+        return self._main_folder
+    
+    def is_first_launch_of_app(self) -> Union[bool, None]:
+        return self._is_first_launch_of_app
+    
     def get_user_config(self, folder_with_translations: str):
         """returns data from the user_config file."""
 
         #checking for correct input
-        self._checking_the_path(os.path.join(self.main_folder, folder_with_translations))
+        self._checking_the_path(os.path.join(self._main_folder, folder_with_translations))
 
-        file_manager = YAMLFileManager(self.main_folder, self.FILE_NAME)
-        if isfile( join(self.main_folder, self.FILE_NAME) ):
-            self.user_config = file_manager.load_file()
+        file_manager = YAMLFileManager(self._main_folder, self.FILE_NAME)
+        if isfile( join(self._main_folder, self.FILE_NAME) ):
+            user_config = file_manager.load_file()
+            self._is_first_launch_of_app = False
         else:
-            self.user_config = self.USER_CONFIG_TEMPLATE
+            user_config = self.USER_CONFIG_TEMPLATE
+            self._is_first_launch_of_app = True
         
-        self.user_config['dict_interface_language'] = self._get_dictionary_of_interface_language(folder_with_translations)
+        user_config['dict_interface_language'] = self._get_dictionary_of_interface_language(folder_with_translations)
         
-        return self.user_config
+        return user_config
     
     def save_user_config(self, data) -> None:
         """writes data to the user_config file."""
 
-        file_manager = YAMLFileManager(self.main_folder, self.FILE_NAME)
+        file_manager = YAMLFileManager(self._main_folder, self.FILE_NAME)
         file_manager.write_to_file(data)
     
     def _get_dictionary_of_interface_language(self, folder_with_translations):
         """return dict_interface_language."""
         
-        path_to_folder_with_translations = os.path.join(self.main_folder, folder_with_translations)
+        path_to_folder_with_translations = os.path.join(self._main_folder, folder_with_translations)
         manager = YAMLFileManager(path_to_folder_with_translations)
 
         translations_files = manager.get_yaml_files()
