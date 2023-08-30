@@ -1,4 +1,3 @@
-import tkinter
 from typing import Optional, Tuple, Union, Callable
 from customtkinter import *
 
@@ -19,9 +18,9 @@ class FolderDialogComboBox(CTkComboBox):
                  text_color_disabled: Optional[Union[str, Tuple[str, str]]] = None,
 
                  font: Optional[Union[tuple, CTkFont]] = None,
-                 state: str = tkinter.NORMAL,
+                 state: str = NORMAL,
                  hover: bool = True,
-                 variable: Union[tkinter.Variable, None] = None,
+                 variable: Union[Variable, None] = None,
                  command: Union[Callable[[str], None], None] = None,
                  justify: str = "left",
                  **kwargs):
