@@ -1,7 +1,7 @@
 __author__ = 'Steklyashka'
 
 from typing import List, Optional, Tuple, Union, Callable
-from json import loads
+import json
 from shutil import copyfile
 import os, logging
 from .translator import Translator
@@ -25,7 +25,7 @@ class ModTranslator:
         main_dir = os.path.dirname(os.path.abspath(__file__))
 
         with open(os.path.join(main_dir, "supported_languages.json"), 'r', encoding="utf8") as f:
-            SUPPORT_LANGUAGES = loads(f.read())
+            SUPPORT_LANGUAGES = json.loads(f.read())
         
         return SUPPORT_LANGUAGES
 
@@ -68,8 +68,11 @@ class ModTranslator:
                 from_file = os.path.join(path, FROM_LANGUAGE).replace("\\", "/")
                 to_file = os.path.join(path, target_language_code).replace("\\", "/")
                 
-                # Чтение файла и получение всех текстов для перевода.
-                file_contents: dict = loads(ZipFileManager.read_file_in_ZipFile(zip_file_path, from_file))
+                try:
+                    # Чтение файла и получение всех текстов для перевода.
+                    file_contents: dict = json.loads(ZipFileManager.read_file_in_ZipFile(zip_file_path, from_file))
+                except json.decoder.JSONDecodeError as e:
+                    self._logger.error(f"mod {mod_name} has broken json file syntax.")
                 texts = list(file_contents.values())
                 
                 try:
