@@ -73,6 +73,7 @@ class ModTranslator:
                     file_contents: dict = json.loads(ZipFileManager.read_file_in_ZipFile(zip_file_path, from_file))
                 except json.decoder.JSONDecodeError as e:
                     self._logger.error(f"mod {mod_name} has broken json file syntax.")
+                    continue
                 texts = list(file_contents.values())
                 
                 try:
