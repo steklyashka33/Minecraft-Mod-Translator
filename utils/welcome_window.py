@@ -2,6 +2,7 @@ from typing import Optional, Tuple, Union
 from customtkinter import *
 from .get_data import GetData
 import webbrowser
+from sys import platform
 
 class WelcomeWindow(CTkToplevel):
     """Open welcome window."""
@@ -17,6 +18,9 @@ class WelcomeWindow(CTkToplevel):
         self.grab_set()
         self.geometry("300x200")
         self.resizable(False, False)
+        self.iconbitmap(self.config.logo)
+        if platform.startswith("win"):
+            self.after(200, lambda: self.iconbitmap(self.config.logo))
         # self.protocol("WM_DELETE_WINDOW", self.close_toplevel)
         # self.wm_iconbitmap()
         # self.after(300, lambda: self.iconphoto(False, self.iconpath))

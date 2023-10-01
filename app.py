@@ -34,6 +34,7 @@ class App(CTk):
         y_cordinate = (screen_height - window_height)//2
         self.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
         self.resizable(False, False)
+        self.iconbitmap(self.config.logo)
         
 		# configure grid layout (3x4)
         self.grid_columnconfigure(0, weight=3, uniform="fred")
@@ -50,6 +51,7 @@ class App(CTk):
 
         self.build_sidebar()
         self.build_main()
+        
         if self.data.is_first_launch_of_app():
             WelcomeWindow(self, self.data)
 
