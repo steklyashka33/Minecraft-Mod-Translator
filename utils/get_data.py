@@ -21,8 +21,12 @@ class GetData:
         folder_with_translations = config["folder_with_translations"]
         user_config = self._user_config_manager.get_user_config(folder_with_translations)
 
-        #get lang
-        language_file = user_config["dict_interface_language"][ user_config["interface_language"] ]
+        try:
+            #get lang
+            language_file = user_config["dict_interface_language"][ user_config["interface_language"] ]
+        except KeyError as e:
+            user_config["interface_language"] = "English"
+            language_file = user_config["dict_interface_language"][ user_config["interface_language"] ]
         lang = YAMLFileManager(os.path.join( self._main_folder, folder_with_translations ), language_file).load_file()
 
         #get supported_languages
