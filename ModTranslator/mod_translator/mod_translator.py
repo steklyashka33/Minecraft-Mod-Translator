@@ -90,9 +90,10 @@ class ModTranslator:
                     continue
 
                 # Подстановка переводов к ключам.
-                result = dict(zip( file_contents.keys(), translation ))
+                processed_texts = [(self._startwith + text) for text in translation]
+                result = dict(zip( file_contents.keys(), processed_texts ))
 
-                # Указывать какая часть переведена если частей 2 и более.
+                # Указывать какая часть переведена, если частей более 2.
                 part = index+1 if len(folders)>=2 else None
                 # save
                 self._save(mod_name, to_file, str(result), part)
