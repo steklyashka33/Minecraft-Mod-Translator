@@ -111,9 +111,12 @@ class Translator(google_Translator):
 	
 	def _split_text(self, text: str) -> list[str]:
 		"""Разделят текст по раздилителю."""
+		if not text:
+			return []
 		split_text = text.split(self._separator.strip())
 		strip_function = lambda s: s.strip()
-		return list(map(strip_function, split_text)) #обрезаем текст от пробелов
+		strip_text = list(map(strip_function, split_text)) #обрезаем текст от пробелов
+		return strip_text
 
 
 if __name__ == '__main__':
