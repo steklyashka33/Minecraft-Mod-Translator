@@ -74,6 +74,12 @@ class ModTranslator:
                 except json.decoder.JSONDecodeError as e:
                     self._logger.error(f"mod {mod_name} has broken json file syntax.")
                     continue
+                except Exception as e:
+                    if "There is no item named " in str(e):
+                        self._logger.error(f"mod {mod_name} uses an unsupported language file extension.")
+                        continue
+                    self._logger.error(f"mod {mod_name} error with the message '{e}'.")
+                    continue
                 texts = list(file_contents.values())
                 
                 try:
