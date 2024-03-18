@@ -68,8 +68,7 @@ class Page3(CTkFrame):
         
         # создание кнопки для продолжения
         button_font = CTkFont("Arial", size=22, weight="bold")
-        close_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.close, command=self.next_step) # type: ignore
-        close_button.grid(row=3, column=0, sticky="")
+        self.close_button = CTkButton(self, width=widget_width, height=widget_height, font=button_font, text=self.lang.close, command=self.next_step) # type: ignore
     
     def _start_translating(self):
         if self._session.create_subfolder:
@@ -91,6 +90,7 @@ class Page3(CTkFrame):
         
         #finish
         self.logger.info("Complete.")
+        self.close_button.grid(row=3, column=0, sticky="")
     
     def next_step(self):
         if self.thread.is_alive():
