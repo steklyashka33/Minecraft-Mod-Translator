@@ -68,8 +68,7 @@ class Page1(CTkFrame):
 
         # функция для ограничения длины строки
         def character_limit(entry_text):
-            if len(entry_text.get()) > 0:
-                entry_text.set(entry_text.get()[:6])
+            entry_text.set(entry_text.get()[:6])
         
         # рамка для приставки к переводам
         startwith_frame = CTkFrame(self, width=widget_width, height=int(widget_height*1.33), fg_color="transparent")
