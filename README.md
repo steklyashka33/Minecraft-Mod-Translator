@@ -7,9 +7,8 @@ translates minecraft mods into other languages
 In the installer, click "Add Python to PATH" and complete the download.
 Download the repository archive and unzip it. 
 Run CMD. With the "cd" command C:/path/to/repo/" you get to the repository folder. 
-Run "pip install -r requirements.txt". 
-Close CMD. 
-Run main.py. 
+Run "pip install -r requirements.txt".
+Run "python main.py". 
 
 ## License
 [MIT License](LICENSE)
