@@ -73,7 +73,7 @@ class Page3(CTkFrame):
     def _start_translating(self):
         if self._session.create_subfolder:
             now = datetime.now()
-            path_to_save_folder = os.path.join(self._session.path_to_save, now.strftime("%d-%m %H;%M;%S")).replace("\\", "/") + "/"
+            path_to_save_folder = os.path.join(self._session.path_to_save, now.strftime("%d.%m %H-%M-%S")).replace("\\", "/") + "/"
             os.mkdir(path_to_save_folder)
         else:
             path_to_save_folder = self._session.path_to_save
